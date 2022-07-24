@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from "react"
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import FinishSignUp from './FinishSignUp';
@@ -17,23 +18,17 @@ import ReactDOM from 'react-dom';
 
 function App() {
 
-   
+
   const navigate = useNavigate()
 
-  
+
   const [user, setUser] = useState<AuthenticatedUser>()
 
-
-
-
   useEffect(() => {
-
-
-
     if (localStorage.getItem("authToken") != null) {
       var authToken = localStorage.getItem("authToken")
       var phoneNumber = localStorage.getItem("phoneNumber")
-      axios.post(  "/get_user_by_auth_token", {}, { params: { authToken: authToken, phoneNumber: phoneNumber } })
+      axios.post("/get_user_by_auth_token", {}, { params: { authToken: authToken, phoneNumber: phoneNumber } })
         .then(response => {
           if (response.data.username == null) {
             console.log("user doesn't have name yet", response.data)
@@ -81,19 +76,17 @@ function App() {
 
   return (
     <div style={style}>
-      {topBar}
-      <Routes>
-        <Route path="makepost" element={makePostComponent} />
-        <Route path="signup" element={<SignUp />} />
-        <Route path="home" element={timelineComponent} />
-        <Route path="finishsignup" element={<FinishSignUp />} />
-        <Route path="profile" element={profileComponent} />
-        <Route path="search" element={findFriendsComponent} />
-      </Routes>
+        {topBar}
+        <Routes>
+          <Route path="makepost" element={makePostComponent} />
+          <Route path="signup" element={<SignUp />} />
+          <Route path="home" element={timelineComponent} />
+          <Route path="finishsignup" element={<FinishSignUp />} />
+          <Route path="profile" element={profileComponent} />
+          <Route path="search" element={findFriendsComponent} />
+        </Routes>
     </div>
   );
 }
-
-ReactDOM.render(<App />, document.getElementById("root") )
 
 export default App;

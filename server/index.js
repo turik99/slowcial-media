@@ -807,12 +807,12 @@ mongoClient.connect().then(() => {
 
 
 
-  if (process.env.NODE_ENV === "production"){
-    app.use(express.static(publicPath));
-    app.get("/", (req, res)=> {
-      res.sendFile(path.join(publicPath, "index.html"))
-    })
-  }
+  // if (process.env.NODE_ENV === "production"){
+  //   app.use(express.static(publicPath));
+  //   app.get("*", (req, res)=> {
+  //     res.sendFile(path.join(publicPath, "index.html"))
+  //   })
+  // }
 
   app.listen(port, () => {
     console.log(`[server]: Server is running at https://localhost:${port}`);
