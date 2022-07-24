@@ -20,6 +20,7 @@ function App() {
    
   const navigate = useNavigate()
 
+  
   const [user, setUser] = useState<AuthenticatedUser>()
 
 
