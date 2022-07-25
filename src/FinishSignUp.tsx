@@ -14,10 +14,13 @@ function FinishSignUp() {
     const [availableMessage, setAvailableMessage] = useState("")
     const debounceUsername = debounce(value => setUsername(value), 200);
 
-
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+      baseURL=""
+    }
     useEffect(() => {
         if (username !== "") {
-            axios.post("/check_username", {}, { params: { "username": username } })
+            axios.post(baseURL + "/check_username", {}, { params: { "username": username } })
                 .then(result => {
                     if (result.status === 200) {
                         setAvailableMessage("available")
@@ -64,7 +67,7 @@ function FinishSignUp() {
         var formData = new FormData()
         formData.append("pfp", fileUpload)
         return new Promise((resolve, reject)=>{
-            axios.post("/upload_pfp", formData, { params: { authToken: authToken, phoneNumber: phoneNumber } })
+            axios.post(baseURL + "/upload_pfp", formData, { params: { authToken: authToken, phoneNumber: phoneNumber } })
             .then(response => {
                 if (response.status === 200) {
                     console.log("success uploading pfp", response.data)
@@ -81,7 +84,7 @@ function FinishSignUp() {
     }
 
     function finishSignUp() {
-        axios.post("/finish_signup", {}, { params: { authToken: authToken, username: username, userPfp: filename } })
+        axios.post(baseURL + "/finish_signup", {}, { params: { authToken: authToken, username: username, userPfp: filename } })
             .then(result => {
                 if (result.status === 500) {
                     if (result.data === "username taken") {

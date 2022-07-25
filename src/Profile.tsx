@@ -36,6 +36,10 @@ function Profile(props: ProfileProps) {
     const [filename, setFileName] = useState<string>("")
     const [userPfp, setUserPfp] = useState<string>(userToView.userPfp)
 
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+      baseURL=""
+    }
     const fileInputRef = useRef<HTMLInputElement>(null)
 
 
@@ -194,7 +198,7 @@ function Profile(props: ProfileProps) {
     </div>
 
     function unsendFriendRequest() {
-        axios.post("/unsend_friend_request", {}, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "friendID": userToView._id } })
+        axios.post(baseURL + "/unsend_friend_request", {}, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "friendID": userToView._id } })
             .then(result => {
                 if (result.status === 200) {
                     setStatus("not friends")
@@ -203,7 +207,7 @@ function Profile(props: ProfileProps) {
     }
 
     function unfriend() {
-        axios.post("/unfriend", {}, { params: { "friendID": userToView._id, "authToken": authToken, "phoneNumber": phoneNumber } })
+        axios.post(baseURL + "/unfriend", {}, { params: { "friendID": userToView._id, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
                     setStatus("not friends")
@@ -255,8 +259,13 @@ export async function uploadProfilePicture(authToken: string, imageKey: string, 
 }
 
 export function sendFriendRequest(friendID: string, authToken: string, phoneNumber: string) {
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+        baseURL=""
+    }
+    
     return new Promise<string>((resolve, reject) => {
-        axios.post("/send_friend_request", {}, { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
+        axios.post(baseURL + "/send_friend_request", {}, { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
                     resolve("request sent")

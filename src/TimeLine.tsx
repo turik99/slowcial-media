@@ -20,16 +20,20 @@ function TimeLine(props: TimeLineProps) {
     const phoneNumber = props.authenticatedUser.phoneNumber
     const [canPost, setCanPost] = useState(false)
 
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+      baseURL=""
+    }
     useEffect(() => {
         // Run! Like go get some data from an API.
         if (props.authenticatedUser) {
 
-            Promise.all([axios.post("/get_timeline", {}, {
+            Promise.all([axios.post(baseURL + "/get_timeline", {}, {
                 params: {
                     "phoneNumber": phoneNumber,
                     "authToken": authToken
                 }
-            }), axios.post("/get_time_of_last_post", {}, {params: {"userID": props.authenticatedUser._id}})])
+            }), axios.post(baseURL + "/get_time_of_last_post", {}, {params: {"userID": props.authenticatedUser._id}})])
             .then(results => {
                 if (results){
                     setTimelinePosts(results[0].data as PostType[])

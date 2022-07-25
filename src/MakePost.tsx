@@ -15,6 +15,10 @@ function MakePost(props: MakePostProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null)
 
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+      baseURL=""
+    }
 
     var xButton = <></>
     if (fileUpload.name !== "") {
@@ -78,7 +82,7 @@ function MakePost(props: MakePostProps) {
         var data = new FormData()
         data.append("user_image", fileUpload)
         return new Promise((resolve, reject) => {
-            axios.post("/upload_user_image", data, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "imageKey": fileUpload.name } })
+            axios.post(baseURL + "/upload_user_image", data, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "imageKey": fileUpload.name } })
                 .then(response => {
                     if (response.status === 200) {
                         console.log("success uploading image", response.data)
@@ -115,7 +119,7 @@ function MakePost(props: MakePostProps) {
 
         if (fileUpload.name !== "") {
             uploadImage().then(result => {
-                axios.post("/make_post", {}, {
+                axios.post(baseURL + "/make_post", {}, {
                     params: {
                         authToken: authToken, userID: props.authenticatedUser._id, userImage: fileUpload.name,
                         description: description, phoneNumber: phoneNumber

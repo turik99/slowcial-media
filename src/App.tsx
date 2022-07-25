@@ -20,15 +20,18 @@ function App() {
 
 
   const navigate = useNavigate()
-
-
   const [user, setUser] = useState<AuthenticatedUser>()
+
+  var baseURL = "https://slowcial-media.herokuapp.com"
+  if (window.location.href.includes("localhost")){
+    baseURL=""
+  }
 
   useEffect(() => {
     if (localStorage.getItem("authToken") != null) {
       var authToken = localStorage.getItem("authToken")
       var phoneNumber = localStorage.getItem("phoneNumber")
-      axios.post("/get_user_by_auth_token", {}, { params: { authToken: authToken, phoneNumber: phoneNumber } })
+      axios.post(baseURL + "/get_user_by_auth_token", {}, { params: { authToken: authToken, phoneNumber: phoneNumber } })
         .then(response => {
           if (response.data.username == null) {
             console.log("user doesn't have name yet", response.data)

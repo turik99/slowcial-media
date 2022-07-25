@@ -17,9 +17,14 @@ function TopBar(props: TopBarProps) {
     let navigate = useNavigate()
     const [friendRequests, setFriendRequests] = useState<OnceUser[]>([])
 
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+        baseURL=""
+    }
+
     useEffect(() => {
         Promise.all(props.user.incomingFriendRequests.map(x => {
-            return axios.post("/get_user", {}, { params: { "_id": x } })
+            return axios.post(baseURL + "/get_user", {}, { params: { "_id": x } })
         })).then(results => {
             if (results) {
                 console.log("top test", results)
@@ -54,9 +59,13 @@ function TopBar(props: TopBarProps) {
 }
 
 export async function acceptFriendRequest(friendID: string, _id: string) {
+
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+        baseURL=""
+    }
         try{
-            const acceptRes = await axios.post("/accept_friend_request", {}, { params: { "_id": _id, "friendID": friendID } })
-            
+            const acceptRes = await axios.post(baseURL + "/accept_friend_request", {}, { params: { "_id": _id, "friendID": friendID } })
         }
         catch(error){
 
