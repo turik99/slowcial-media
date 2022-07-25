@@ -791,7 +791,6 @@ mongoClient.connect().then(() => {
       }
       else {
         console.log("found user and phone did not match")
-
         //if they dont' match send them home
         // res.status(401).send("incorrect auth")
         throw (error)
@@ -801,16 +800,15 @@ mongoClient.connect().then(() => {
       throw (error)
     }
 
-
-
   }
 
 
 
   if (process.env.NODE_ENV === "production"){
+    app.use(cors())
     app.use(express.static(publicPath));
     app.get("*", (req, res)=> {
-      
+
       res.sendFile(path.join(publicPath, "index.html"))
     })
   }
