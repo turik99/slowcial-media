@@ -15,12 +15,37 @@ import Profile from './Profile';
 import FindFriends from './FindFriends';
 import ReactDOM from 'react-dom';
 
+export const AuthedUser = React.createContext<AuthenticatedUser>({
+  _id: "",
+  username: "",
+  userPfp: "",
+  timeCreated: 0,
+  userImageKeys: [""],
+  authToken: "",
+  friends: [""],
+  phoneNumber: "",
+  outgoingFriendRequests: [],
+  incomingFriendRequests: []
+})
+
 
 function App() {
 
 
   const navigate = useNavigate()
-  const [user, setUser] = useState<AuthenticatedUser>()
+  const [user, setUser] = useState<AuthenticatedUser>({  
+    _id: "",
+    username: "",
+    userPfp: "",
+    timeCreated: 0,
+    userImageKeys: [""],
+    authToken: "",
+    friends: [""],
+    phoneNumber: "",
+    outgoingFriendRequests: [],
+    incomingFriendRequests: []
+})
+
 
   var baseURL = "https://slowcial-media.herokuapp.com"
   if (window.location.href.includes("localhost")){
@@ -55,11 +80,6 @@ function App() {
     }
   }, [])
 
-  var topBar = <></>
-  if (user != undefined) {
-    topBar = <TopBar user={user} />
-  }
-
 
   var style: CSSProperties = { display: "flex", marginTop: "2px", width: "480px", marginLeft: "auto", marginRight: "auto", flexDirection: "column", alignItems: "center" }
   if (isMobile() || window.innerWidth < 650) {
@@ -70,7 +90,7 @@ function App() {
   var profileComponent = <></>
   var findFriendsComponent = <></>
   var makePostComponent = <></>
-  if (user != undefined) {
+  if (user.username !== "") {
     timelineComponent = <TimeLine authenticatedUser={user} />
     profileComponent = <Profile authenticatedUser={user} />
     findFriendsComponent = <FindFriends authenticatedUser={user} />
@@ -79,7 +99,8 @@ function App() {
 
   return (
     <div style={style}>
-        {topBar}
+      <AuthedUser.Provider value={user} >
+        <TopBar />
         <Routes>
           <Route path="makepost" element={makePostComponent} />
           <Route path="signup" element={<SignUp />} />
@@ -88,6 +109,7 @@ function App() {
           <Route path="profile" element={profileComponent} />
           <Route path="search" element={findFriendsComponent} />
         </Routes>
+      </AuthedUser.Provider>
     </div>
   );
 }
