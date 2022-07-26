@@ -84,7 +84,7 @@ function FinishSignUp() {
     }
 
     function finishSignUp() {
-        axios.post(baseURL + "/finish_signup", {}, { params: { authToken: authToken, username: username, userPfp: filename } })
+        axios.get(baseURL + "/finish_signup",  { params: { authToken: authToken, username: username, userPfp: filename } })
             .then(result => {
                 if (result.status === 500) {
                     if (result.data === "username taken") {

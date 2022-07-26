@@ -90,9 +90,11 @@ function App() {
   var profileComponent = <></>
   var findFriendsComponent = <></>
   var makePostComponent = <></>
+  var topBar = <></>
   if (user.username !== "") {
+    topBar = <TopBar />
     timelineComponent = <TimeLine authenticatedUser={user} />
-    profileComponent = <Profile authenticatedUser={user} />
+    profileComponent = <Profile />
     findFriendsComponent = <FindFriends authenticatedUser={user} />
     makePostComponent = <MakePost authenticatedUser={user} />
   }
@@ -100,7 +102,8 @@ function App() {
   return (
     <div style={style}>
       <AuthedUser.Provider value={user} >
-        <TopBar />
+
+        {topBar}
         <Routes>
           <Route path="makepost" element={makePostComponent} />
           <Route path="signup" element={<SignUp />} />

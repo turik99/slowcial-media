@@ -17,10 +17,14 @@ function ProfileTimeLine(props: ProfileTimeLineProps) {
     //Get posts and render them inline one after another in time order.
     //Paginate by Day and allow user to render more. 
     const [timelinePosts, setTimelinePosts] = useState(Array<PostType>)
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+        baseURL = ""
+    }
 
     useEffect(() => {
         // Run! Like go get some data from an API.
-        axios.get(  "/get_user_posts", {
+        axios.get(baseURL +  "/get_user_posts", {
             params: {
                 "userID": props.userToView._id
             }

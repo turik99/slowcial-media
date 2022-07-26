@@ -2,15 +2,12 @@ import { useLocation } from "react-router-dom"
 import ProfileTimeLine from "./ProfileTimeLine"
 import { AuthenticatedUser, OnceUser } from "./types"
 import axios from "axios"
-import { useRef, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import { useDetectClickOutside } from "react-detect-click-outside"
 import editPfpSvg from "./images/editpfp.svg"
 import { makeid } from "./FinishSignUp"
 import Resizer from "react-image-file-resizer"
-
-export interface ProfileProps {
-    authenticatedUser: AuthenticatedUser
-}
+import { AuthedUser } from "./App"
 
 export interface LocationType {
     state: {
@@ -18,17 +15,20 @@ export interface LocationType {
     }
 }
 
-function Profile(props: ProfileProps) {
+function Profile() {
 
-    const authToken = props.authenticatedUser.authToken
-    const phoneNumber = props.authenticatedUser.phoneNumber
+    const authenticatedUser = useContext(AuthedUser)
+    const [self, setSelf] = useState(authenticatedUser)
+
+    const authToken = authenticatedUser.authToken
+    const phoneNumber = authenticatedUser.phoneNumber
     const location = useLocation() as LocationType
     const state = location.state
     const userToView = state.userToView as OnceUser
-    const requestSent = props.authenticatedUser.outgoingFriendRequests.includes(userToView._id)
-    const isFriends = props.authenticatedUser.friends.includes(userToView._id)
-    const isSelf = props.authenticatedUser._id === userToView._id
-
+    const requestSent = authenticatedUser.outgoingFriendRequests.includes(userToView._id)
+    const isFriends = authenticatedUser.friends.includes(userToView._id)
+    const isSelf = authenticatedUser._id === userToView._id
+    
     const [editMode, setEditMode] = useState(false)
     const [showRequestButton, setShowRequestButton] = useState(false)
     const [showUnfriendButton, setShowHideUnfriend] = useState(false)
@@ -85,21 +85,26 @@ function Profile(props: ProfileProps) {
 
     const CancelChanges = () => {
         return (<button style={{}} onClick={() => {
-            setUserPfp(props.authenticatedUser.userPfp)
+            setUserPfp(authenticatedUser.userPfp)
             setEditMode(false)
         }} className="small_button">Cancel</button>)
     }
 
     const SaveChanges = () => {
-        if (userPfp === props.authenticatedUser.userPfp) {
+        if (userPfp === authenticatedUser.userPfp) {
             return <button style={{ color: "lightgrey", marginTop: "12px" }} className="small_button" >Save Changes</button>
         }
         return (<button style={{ backgroundColor: "#FAFF00", marginTop: "12px" }} className="small_button"
             onClick={async () => {
                 console.log("got to click handling")
                 try {
-                    const uploadRes = await uploadProfilePicture(props.authenticatedUser.authToken, filename, fileUpload)
+                    const uploadRes = await uploadProfilePicture(authenticatedUser.authToken, filename, fileUpload)
                     setUserPfp(uploadRes.userPfp)
+
+                    var user = self
+                    self.userPfp = uploadRes.userPfp
+                    setSelf(user)
+
                     setEditMode(false)
                 }
                 catch (error) {
@@ -234,7 +239,7 @@ function Profile(props: ProfileProps) {
 
     }
     else {
-        if (props.authenticatedUser._id !== userToView._id) {
+        if (authenticatedUser._id !== userToView._id) {
             editOrSave = <></>
         }
         else {
@@ -242,12 +247,15 @@ function Profile(props: ProfileProps) {
         }
     }
 
-    return (<div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-        {<ProfileNameAndPicture editMode={editMode} />}
-        {!isSelf && (friendButton)}
-        {editOrSave}
-        <ProfileTimeLine userToView={userToView} authenticatedUser={props.authenticatedUser} />
-    </div>)
+    return (
+        <AuthedUser.Provider value={self}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+                {<ProfileNameAndPicture editMode={editMode} />}
+                {!isSelf && (friendButton)}
+                {editOrSave}
+                <ProfileTimeLine userToView={userToView} authenticatedUser={authenticatedUser} />
+            </div>
+            </AuthedUser.Provider>)
 }
 
 

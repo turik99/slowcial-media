@@ -78,7 +78,8 @@ export interface NotificationsButtonProps {
 export const NotificationsButton = (props: NotificationsButtonProps) => {
     const authenticatedUser = useContext(AuthedUser)
     const [showNotifications, setShowNotifications] = useState(false)
-    const ref = useDetectClickOutside({ onTriggered: () => { setShowNotifications(false) } })
+    const ref = useDetectClickOutside({ onTriggered: () => { 
+        setShowNotifications(false) } })
     var outputButtons = props.friendRequests.map(x => {
         return(<FriendRequestItem requestingUser={x} />)
     })

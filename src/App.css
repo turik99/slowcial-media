@@ -10,6 +10,7 @@
 }
 
 .profile_picture{
+  object-fit: cover;
   border-radius: 50%;
   border-color: #FAFF00;
   border-width: 4px;
@@ -47,6 +48,12 @@
   color: black;
   font-size: 15px;
 }
+
+.medium_text{
+  color: black;
+  font-size: 22px;
+}
+
 
 .special_input {
   box-sizing: border-box;

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Input from "react-phone-input-2"
 import 'react-phone-input-2/lib/style.css'
@@ -12,7 +12,6 @@ function SignUp() {
     const [phoneNumber, setPhoneNumber] = useState("")
     const [smsCode, setSMSCode] = useState("")
     const [codeSent, setCodeSent] = useState(false)
-
 
     let navigate = useNavigate()
 
@@ -56,16 +55,27 @@ function SignUp() {
 
 
     function verifySMSCode() {
+        var baseURL = "https://slocial-media.herokuapp.com"
+        if (window.location.href.includes("localhost")){
+            baseURL = ""
+        }
         var phone = "+" + phoneNumber
         var timeCreated: number = Math.round((new Date().getTime()) / 1000)
-        axios.get<VerifySMSResponseType>(  "/verify_sms_code", { params: { phoneNumber: phone, smsCode: smsCode, timeCreated: timeCreated } })
+        axios.get<VerifySMSResponseType>(baseURL + "/verify_sms_code", { params: { phoneNumber: phone, smsCode: smsCode, timeCreated: timeCreated } })
             .then(
                 (response) => {
+                    console.log("response from phone verif", response)
                     if (response.status === 200) {
                         localStorage.setItem("authToken", response.data.authToken)
                         localStorage.setItem("phoneNumber", phone)
                         if (response.data.userExists === true) {
-                            navigate("/home")
+                            if (response.data.userIsFinished === true){
+                                navigate("/home")
+                                
+                            }
+                            else{
+                                navigate("/finishsignup")
+                            }
                         }
                         else {
                             navigate("/finishsignup")

@@ -286,13 +286,27 @@ mongoClient.connect().then(() => {
         const authToken = makeid(10)
         const user = await usersCollection.findOne({ "phoneNumber": phone })
         if (user) {
-          const updateRes = await usersCollection.updateOne({ "phoneNumber": phone }, { $set: { "authToken": authToken } })
-          return ({ userExists: true }, { authToken: authToken })
+          if (user.authToken != null) {
+            console.log('based!!!', user.authToken)
+            if (user.username != "") {
+              return ({ userExists: true, authToken: user.authToken, userIsFinished: true })
+            }
+            else {
+              return ({ userExists: true, authToken: user.authToken, userIsFinished: false })
+            }
+          }
+          else {
+            const updateRes = await usersCollection.updateOne({ "phoneNumber": phone }, { $set: { "authToken": authToken } })
+            return ({ userExists: true, authToken: authToken, userIsFinished: false })
+
+          }
 
         }
         else {
           const insertRes = await usersCollection.insertOne({
             "phoneNumber": phone,
+            "username": "",
+            "userPfp": "",
             "authToken": authToken,
             "friends": [],
             "userImageKeys": [],
@@ -300,7 +314,7 @@ mongoClient.connect().then(() => {
             "timeCreated": timeCreated,
             "outgoingFriendRequests": [],
           })
-          return ({ userExists: false }, { authToken: authToken })
+          return ({ userExists: false, authToken: authToken })
         }
       }
       else {
@@ -539,11 +553,21 @@ mongoClient.connect().then(() => {
             .limit(numberOfPosts)
             .sort({ "timeStamp": -1 })
             .toArray((error, result) => {
-              console.log("result from toArray", result)
-              for (var i = 0; i < result.length; i++) {
-                timeline.push(result[i])
+              if (error) {
+                res.status(500).send("")
               }
-              res.status(200).send(timeline)
+              if (result) {
+                console.log("result from toArray", result)
+                for (var i = 0; i < result.length; i++) {
+                  timeline.push(result[i])
+                }
+                res.status(200).send(timeline)
+
+
+              }
+              else {
+                res.status(500).send("")
+              }
             })
         }
         else {
@@ -605,7 +629,7 @@ mongoClient.connect().then(() => {
   app.get("/get_user_posts", (req, res) => {
     var userID = req.query.userID
     var timeline = []
-    try{
+    try {
       postsCollection.find({
         "userID": new ObjectId(userID),
       }).limit(10)
@@ -620,9 +644,9 @@ mongoClient.connect().then(() => {
           }
           res.status(200).send(timeline)
         })
-  
+
     }
-    catch(error){
+    catch (error) {
       res.status(500).send(error)
     }
   })
@@ -639,8 +663,8 @@ mongoClient.connect().then(() => {
       var currentPfp = currentUser.userPfp.substring(currentUser.userPfp.lastIndexOf("/") + 1, currentUser.userPfp.length)
       console.log("userpfp", currentPfp)
       const deleteOld = await deleteProfilePictureFromAWS(currentPfp)
-      const updateRes = await usersCollection.updateOne({"_id": currentUser._id},
-      { $set: { userPfp: process.env.CLOUDFRONT_DIST_URL + "/pfp/" + imageKey } })
+      const updateRes = await usersCollection.updateOne({ "_id": currentUser._id },
+        { $set: { userPfp: process.env.CLOUDFRONT_DIST_URL + "/pfp/" + imageKey } })
       res.status(200).send({ userPfp: process.env.CLOUDFRONT_DIST_URL + "/pfp/" + imageKey })
     }
     catch (error) {
@@ -804,10 +828,10 @@ mongoClient.connect().then(() => {
 
 
 
-  if (process.env.NODE_ENV === "production"){
+  if (process.env.NODE_ENV === "production") {
     app.use(cors())
     app.use(express.static(publicPath));
-    app.get("*", (req, res)=> {
+    app.get("*", (req, res) => {
 
       res.sendFile(path.join(publicPath, "index.html"))
     })

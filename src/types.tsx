@@ -22,6 +22,7 @@ export interface AuthenticatedUser {
 export interface VerifySMSResponseType {
     userExists: boolean
     authToken: string
+    userIsFinished: boolean
 }
 
 export interface PostType{
