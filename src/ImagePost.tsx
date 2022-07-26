@@ -32,7 +32,11 @@ function ImagePost(props: ImagePostProps) {
     </div>)
 
     function sendLike() {
-        axios.post(  "/like_post", {}, { params: { "_id": props.post._id, "userID": props.authenticatedUser._id } })
+        var baseURL = "https://slowcial-media.herokuapp.com"
+        if (window.location.href.includes("localhost")){
+            baseURL = ""
+        }
+        axios.get(baseURL + "/like_post", { params: { "_id": props.post._id, "userID": props.authenticatedUser._id } })
             .then(result => {
                 if (result.status === 200) {
                     setLiked(!liked)

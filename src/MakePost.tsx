@@ -119,7 +119,7 @@ function MakePost(props: MakePostProps) {
 
         if (fileUpload.name !== "") {
             uploadImage().then(result => {
-                axios.post(baseURL + "/make_post", {}, {
+                axios.get(baseURL + "/make_post",  {
                     params: {
                         authToken: authToken, userID: props.authenticatedUser._id, userImage: fileUpload.name,
                         description: description, phoneNumber: phoneNumber

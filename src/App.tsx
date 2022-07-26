@@ -56,7 +56,7 @@ function App() {
     if (localStorage.getItem("authToken") != null) {
       var authToken = localStorage.getItem("authToken")
       var phoneNumber = localStorage.getItem("phoneNumber")
-      axios.post(baseURL + "/get_user_by_auth_token", {}, { params: { authToken: authToken, phoneNumber: phoneNumber } })
+      axios.get(baseURL + "/get_user_by_auth_token",  { params: { authToken: authToken, phoneNumber: phoneNumber } })
         .then(response => {
           if (response.data.username == null) {
             console.log("user doesn't have name yet", response.data)

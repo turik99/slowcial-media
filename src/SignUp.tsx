@@ -58,7 +58,7 @@ function SignUp() {
     function verifySMSCode() {
         var phone = "+" + phoneNumber
         var timeCreated: number = Math.round((new Date().getTime()) / 1000)
-        axios.post<VerifySMSResponseType>(  "/verify_sms_code", {}, { params: { phoneNumber: phone, smsCode: smsCode, timeCreated: timeCreated } })
+        axios.get<VerifySMSResponseType>(  "/verify_sms_code", { params: { phoneNumber: phone, smsCode: smsCode, timeCreated: timeCreated } })
             .then(
                 (response) => {
                     if (response.status === 200) {
@@ -80,8 +80,13 @@ function SignUp() {
         // Do stuff related to sign up
         //Send Phone Number to TWilio, and push the user to a new screen to enter their verification code
         //if the phone nuber already exists, ask them to sign in / sign up
+        var baseURL = "https//:slowcial-media.herokuapp.com"
+        if (window.location.href.includes("localhost")){
+            baseURL = ""
+        }
+    
         var phone = "+"+phoneNumber
-        axios.post(  "/send_sms_code", {}, { params: { phoneNumber: phone } })
+        axios.get( baseURL +  "/send_sms_code", { params: { phoneNumber: phone } })
             .then((response) => {
                 console.log("send code res", response)
                 if (response.status === 200) {

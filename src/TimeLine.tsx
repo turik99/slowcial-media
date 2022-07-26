@@ -28,12 +28,12 @@ function TimeLine(props: TimeLineProps) {
         // Run! Like go get some data from an API.
         if (props.authenticatedUser) {
 
-            Promise.all([axios.post(baseURL + "/get_timeline", {}, {
+            Promise.all([axios.get(baseURL + "/get_timeline", {
                 params: {
                     "phoneNumber": phoneNumber,
                     "authToken": authToken
                 }
-            }), axios.post(baseURL + "/get_time_of_last_post", {}, {params: {"userID": props.authenticatedUser._id}})])
+            }), axios.get(baseURL + "/get_time_of_last_post", {params: {"userID": props.authenticatedUser._id}})])
             .then(results => {
                 if (results){
                     setTimelinePosts(results[0].data as PostType[])

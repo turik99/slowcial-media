@@ -198,7 +198,14 @@ function Profile(props: ProfileProps) {
     </div>
 
     function unsendFriendRequest() {
-        axios.post(baseURL + "/unsend_friend_request", {}, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "friendID": userToView._id } })
+
+        var baseURL = "https//:slowcial-media.herokuapp.com"
+        if (window.location.href.includes("localhost")){
+            baseURL = ""
+        }
+    
+
+        axios.get(baseURL + "/unsend_friend_request",  { params: { "authToken": authToken, "phoneNumber": phoneNumber, "friendID": userToView._id } })
             .then(result => {
                 if (result.status === 200) {
                     setStatus("not friends")
@@ -207,7 +214,7 @@ function Profile(props: ProfileProps) {
     }
 
     function unfriend() {
-        axios.post(baseURL + "/unfriend", {}, { params: { "friendID": userToView._id, "authToken": authToken, "phoneNumber": phoneNumber } })
+        axios.get(baseURL + "/unfriend",  { params: { "friendID": userToView._id, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
                     setStatus("not friends")
@@ -265,7 +272,7 @@ export function sendFriendRequest(friendID: string, authToken: string, phoneNumb
     }
     
     return new Promise<string>((resolve, reject) => {
-        axios.post(baseURL + "/send_friend_request", {}, { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
+        axios.get(baseURL + "/send_friend_request", { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
                     resolve("request sent")

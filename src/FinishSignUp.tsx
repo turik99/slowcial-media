@@ -20,7 +20,7 @@ function FinishSignUp() {
     }
     useEffect(() => {
         if (username !== "") {
-            axios.post(baseURL + "/check_username", {}, { params: { "username": username } })
+            axios.get(baseURL + "/check_username",  { params: { "username": username } })
                 .then(result => {
                     if (result.status === 200) {
                         setAvailableMessage("available")

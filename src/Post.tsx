@@ -17,8 +17,12 @@ function Post(props: PostProps) {
     const [user, setUser] = useState<OnceUser>({ username: "", _id: "", userPfp: "", timeCreated: 0 })
     const [deleted, setDeleted] = useState(false)
 
+    var baseURL = "https//:slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")){
+        baseURL = ""
+    }
     useEffect(() => {
-        axios.post(  "/get_user", {}, { params: { "_id": props.post.userID } })
+        axios.get(baseURL + "/get_user", { params: { "_id": props.post.userID } })
             .then(userResult => {
                 console.log("user result from user bar", userResult)
                 setUser(userResult.data)

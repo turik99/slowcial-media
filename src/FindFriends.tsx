@@ -17,7 +17,7 @@ function FindFriends(props: FindFriendsProps){
 
     useEffect( ()=> {
         if (searchTerm !== ""){
-            axios.post<OnceUser[]>(  "/search_users", {}, {params: {"searchTerm": searchTerm}})
+            axios.get<OnceUser[]>(  "/search_users",  {params: {"searchTerm": searchTerm}})
             .then(result => {
                 var r:OnceUser[] = []
                 result.data.map(x => {r.push(x)})

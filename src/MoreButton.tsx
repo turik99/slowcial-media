@@ -41,8 +41,12 @@ function MoreButton(props: MoreButtonProps){
 
     
     function deletePost(){
+        var baseURL = "https://slowcial-media.herokuapp.com"
+        if (window.location.href.includes("localhost")){
+            baseURL = ""
+        }
         var imgKey = props.post.imgUrl.substring(props.post.imgUrl.lastIndexOf("/")+1, props.post.imgUrl.length)
-        axios.post(  "/delete_post", {}, {params: {"_id": props.post._id, "authToken": authToken, "userID": props.authenticatedUser._id, 
+        axios.delete(baseURL +   "/delete_post",  {params: {"_id": props.post._id, "authToken": authToken, "userID": props.authenticatedUser._id, 
             "imageKey": imgKey}})
         .then(result => {
             if (result.status === 200){
