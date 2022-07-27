@@ -17,7 +17,7 @@ function Post(props: PostProps) {
     const [user, setUser] = useState<OnceUser>({ username: "", _id: "", userPfp: "", timeCreated: 0 })
     const [deleted, setDeleted] = useState(false)
 
-    var baseURL = "https://slowcial-media.herokuapp.com"
+    var baseURL = "http://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
         baseURL = ""
     }

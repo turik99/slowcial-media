@@ -32,7 +32,7 @@ function ImagePost(props: ImagePostProps) {
     </div>)
 
     function sendLike() {
-        var baseURL = "https://slowcial-media.herokuapp.com"
+        var baseURL = "http://slowcial-media.herokuapp.com"
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }

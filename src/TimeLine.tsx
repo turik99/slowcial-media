@@ -21,7 +21,7 @@ function TimeLine(props: TimeLineProps) {
     const phoneNumber = props.authenticatedUser.phoneNumber
     const [canPost, setCanPost] = useState(false)
 
-    var baseURL = "https://slowcial-media.herokuapp.com"
+    var baseURL = "http://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
       baseURL=""
     }

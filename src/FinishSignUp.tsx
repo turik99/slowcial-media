@@ -14,7 +14,7 @@ function FinishSignUp() {
     const [availableMessage, setAvailableMessage] = useState("")
     const debounceUsername = debounce(value => setUsername(value), 200);
 
-    var baseURL = "https://slowcial-media.herokuapp.com"
+    var baseURL = "http://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
       baseURL=""
     }
