@@ -13,6 +13,7 @@ const publicPath = path.join(__dirname, '..', 'public');
 const aws = require("aws-sdk");
 const { S3 } = require('aws-sdk');
 const { lastIndexOf } = require('lodash');
+const { Router } = require('express');
 
 const app = express();
 const port = process.env.PORT;
@@ -793,7 +794,8 @@ mongoClient.connect().then(() => {
   if (process.env.NODE_ENV === "production") {
     app.use(cors())
     app.use(express.static(publicPath));
-    app.get("*", (req, res) => {
+    Router(app)
+    app.get("/", (req, res) => {
       res.setHeader('Cache-Control', 'no-cache');
 
       res.sendFile(path.join(publicPath, "index.html"))
