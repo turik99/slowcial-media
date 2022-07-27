@@ -794,6 +794,7 @@ mongoClient.connect().then(() => {
     app.use(cors())
     app.use(express.static(publicPath));
     app.get("*", (req, res) => {
+      res.setHeader('Cache-Control', 'no-cache');
 
       res.sendFile(path.join(publicPath, "index.html"))
     })
