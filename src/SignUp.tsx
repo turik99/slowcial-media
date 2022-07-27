@@ -90,7 +90,7 @@ function SignUp() {
         // Do stuff related to sign up
         //Send Phone Number to TWilio, and push the user to a new screen to enter their verification code
         //if the phone nuber already exists, ask them to sign in / sign up
-        var baseURL = "https//:slowcial-media.herokuapp.com"
+        var baseURL = "https://slowcial-media.herokuapp.com"
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }

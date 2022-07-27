@@ -210,7 +210,7 @@ function Profile(props: ProfileProps) {
 
     function unsendFriendRequest() {
 
-        var baseURL = "https//:slowcial-media.herokuapp.com"
+        var baseURL = "https://slowcial-media.herokuapp.com"
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }
