@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthenticatedUser, OnceUser, PostType } from "./types";
 import { getDateStringFromUnixTime } from "./MakePost";
 import TimeLineComponent from "./TimeLineComponent";
+import {ReactComponent as Search} from "./images/search.svg"
 
 export interface TimeLineProps {
     authenticatedUser: AuthenticatedUser
@@ -64,7 +65,9 @@ function TimeLine(props: TimeLineProps) {
     const AddFriendsButton = () => {
         return (
             <button style={{ fontSize: "48px", marginTop: "12px", borderRadius: "8px", borderColor: "black", width: "100%", background: "#FAFF00", borderWidth: "2px", borderStyle: "solid" }}
-                onClick={() => { navigate("/search") }} >Find Friends</button>
+                onClick={() => { navigate("/search") }} >Find Friends
+                <Search width="38" height = "38" style={{marginLeft: "12px", marginBottom: -3}} />
+                </button>
         )
     }
 

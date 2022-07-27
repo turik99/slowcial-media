@@ -7,7 +7,7 @@ import { useDetectClickOutside } from "react-detect-click-outside"
 import editPfpSvg from "./images/editpfp.svg"
 import { makeid } from "./FinishSignUp"
 import Resizer from "react-image-file-resizer"
-import { AuthedUser } from "./App"
+import { AuthProvider, useUpdateAuth, useAuth } from "./AuthenticatedUserContext"
 
 export interface LocationType {
     state: {
@@ -15,11 +15,14 @@ export interface LocationType {
     }
 }
 
-function Profile() {
+export interface ProfileProps{
+    authenticatedUser: AuthenticatedUser
+}
 
-    const authenticatedUser = useContext(AuthedUser)
-    const [self, setSelf] = useState(authenticatedUser)
+function Profile(props: ProfileProps) {
 
+    const authenticatedUser = props.authenticatedUser
+    
     const authToken = authenticatedUser.authToken
     const phoneNumber = authenticatedUser.phoneNumber
     const location = useLocation() as LocationType
@@ -47,6 +50,7 @@ function Profile() {
         onTriggered: () => {
             console.log("triggered request ref")
             setShowRequestButton(false)
+            setShowHideUnfriend(false)
         }
     });
     const unfriendButtonRef = useDetectClickOutside({
@@ -68,11 +72,11 @@ function Profile() {
 
     const UnsendRequestButton = () => {
         return (<button className="small_button" style={{
-            width: "130px", position: "absolute", left: -20, top: 25
+            width: "150px", position: "absolute", left: -28, top: 26
         }} onClick={() => {
             setShowRequestButton(false)
             unsendFriendRequest()
-        }}>Unsend Request</button>)
+        }}>Unsend Request ❌</button>)
     }
 
 
@@ -99,12 +103,9 @@ function Profile() {
                 console.log("got to click handling")
                 try {
                     const uploadRes = await uploadProfilePicture(authenticatedUser.authToken, filename, fileUpload)
+                    var updatedUser = authenticatedUser
+                    updatedUser.userPfp = uploadRes.userPfp
                     setUserPfp(uploadRes.userPfp)
-
-                    var user = self
-                    self.userPfp = uploadRes.userPfp
-                    setSelf(user)
-
                     setEditMode(false)
                 }
                 catch (error) {
@@ -115,7 +116,11 @@ function Profile() {
     }
 
     const UnfriendButton = () => {
-        return (<button className="small_button" onClick={unfriend}>Unfriend</button>)
+
+        return (<button className="small_button" style={{position: "absolute", left: -6, top: 27, width: "100px"}}  onClick={()=>{
+            setShowHideUnfriend(false)
+            unfriend()
+        }}>Unfriend ❌</button>)
     }
 
     interface ProfileNameAndPictureProps {
@@ -154,12 +159,13 @@ function Profile() {
 
 
         return (
-            <div style={{ display: "flex", flexDirection: "row", marginTop: "12px", alignItems: "center" }}>
-                <p style={{ fontSize: "48px", margin: 0, marginRight: "12px" }}>{userToView.username}</p>
+            <div style={{ display: "flex", flexDirection: "column", marginTop: "12px", alignItems: "center" }}>
+                <p style={{ fontSize: "48px", margin: 0 }}>{userToView.username}</p>
                 <div style={{ margin: 0, position: "relative" }}>
                     <img style={{ zIndex: 0 }} className="profile_picture" width="108px" height="108px" src={userPfp}></img>
                     {props.editMode && img}
                 </div>
+
             </div>
         )
     }
@@ -178,7 +184,7 @@ function Profile() {
             borderStyle: "solid", borderRadius: "4px",
             borderColor: "black", fontSize: "15px", borderWidth: "2px",
             background: "#FFFFFF"
-        }} onClick={unfriend}>Friends</button>
+        }} onClick={() => { setShowHideUnfriend(!showUnfriendButton) }}>Friends ✅</button>
     }
     if (status === "not friends") {
         friendButtonContent = <button style={{
@@ -248,14 +254,14 @@ function Profile() {
     }
 
     return (
-        <AuthedUser.Provider value={self}>
+        <AuthProvider >
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
                 {<ProfileNameAndPicture editMode={editMode} />}
                 {!isSelf && (friendButton)}
                 {editOrSave}
                 <ProfileTimeLine userToView={userToView} authenticatedUser={authenticatedUser} />
             </div>
-            </AuthedUser.Provider>)
+        </AuthProvider>)
 }
 
 

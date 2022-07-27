@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from "react"
+import React, { useContext } from "react"
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import FinishSignUp from './FinishSignUp';
@@ -14,49 +14,27 @@ import TopBar from './TopBar';
 import Profile from './Profile';
 import FindFriends from './FindFriends';
 import ReactDOM from 'react-dom';
+import { AuthProvider, blankUser } from './AuthenticatedUserContext';
 
-export const AuthedUser = React.createContext<AuthenticatedUser>({
-  _id: "",
-  username: "",
-  userPfp: "",
-  timeCreated: 0,
-  userImageKeys: [""],
-  authToken: "",
-  friends: [""],
-  phoneNumber: "",
-  outgoingFriendRequests: [],
-  incomingFriendRequests: []
-})
+
 
 
 function App() {
 
-
+  const  [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser>(blankUser)
   const navigate = useNavigate()
-  const [user, setUser] = useState<AuthenticatedUser>({  
-    _id: "",
-    username: "",
-    userPfp: "",
-    timeCreated: 0,
-    userImageKeys: [""],
-    authToken: "",
-    friends: [""],
-    phoneNumber: "",
-    outgoingFriendRequests: [],
-    incomingFriendRequests: []
-})
 
 
   var baseURL = "https://slowcial-media.herokuapp.com"
-  if (window.location.href.includes("localhost")){
-    baseURL=""
+  if (window.location.href.includes("localhost")) {
+    baseURL = ""
   }
 
   useEffect(() => {
     if (localStorage.getItem("authToken") != null) {
       var authToken = localStorage.getItem("authToken")
       var phoneNumber = localStorage.getItem("phoneNumber")
-      axios.get(baseURL + "/get_user_by_auth_token",  { params: { authToken: authToken, phoneNumber: phoneNumber } })
+      axios.get<AuthenticatedUser>(baseURL + "/get_user_by_auth_token", { params: { authToken: authToken, phoneNumber: phoneNumber } })
         .then(response => {
           if (response.data.username == null) {
             console.log("user doesn't have name yet", response.data)
@@ -64,9 +42,7 @@ function App() {
           }
           else {
             console.log("user does have name", response.data)
-            response.data.phoneNumber = phoneNumber
-            response.data.authToken = authToken
-            setUser(response.data)
+            setAuthenticatedUser(response.data)
             navigate("/home")
           }
         })
@@ -86,34 +62,42 @@ function App() {
     style = { display: "flex", marginTop: "2px", marginLeft: "5%", marginRight: "5%", flexDirection: "column", alignItems: "center" }
   }
 
-  var timelineComponent = <></>
+  var home = <></>
   var profileComponent = <></>
   var findFriendsComponent = <></>
   var makePostComponent = <></>
   var topBar = <></>
-  if (user.username !== "") {
-    topBar = <TopBar />
-    timelineComponent = <TimeLine authenticatedUser={user} />
-    profileComponent = <Profile />
-    findFriendsComponent = <FindFriends authenticatedUser={user} />
-    makePostComponent = <MakePost authenticatedUser={user} />
+
+  if (authenticatedUser.username !== "") {
+    console.log("authed user check", authenticatedUser)
+    topBar = <TopBar authenticatedUser={authenticatedUser}/>
+    home = <TimeLine authenticatedUser={authenticatedUser} />
+    profileComponent = <Profile authenticatedUser={authenticatedUser}/>
+    findFriendsComponent = <FindFriends authenticatedUser={authenticatedUser} />
+    makePostComponent = <MakePost authenticatedUser={authenticatedUser} />
   }
 
   return (
-    <div style={style}>
-      <AuthedUser.Provider value={user} >
-
-        {topBar}
-        <Routes>
+    <AuthProvider >
+      <div style={style}>
+        <div style={{position: "fixed", width: "480px"}}>
+          {topBar}
+        </div>
+        <div style={{marginTop: 100, width: "100%"}}>        
+          <Routes>
           <Route path="makepost" element={makePostComponent} />
           <Route path="signup" element={<SignUp />} />
-          <Route path="home" element={timelineComponent} />
+          <Route path="home" element={home} />
           <Route path="finishsignup" element={<FinishSignUp />} />
           <Route path="profile" element={profileComponent} />
           <Route path="search" element={findFriendsComponent} />
         </Routes>
-      </AuthedUser.Provider>
-    </div>
+
+
+        </div>
+      </div>
+    </AuthProvider>
+
   );
 }
 

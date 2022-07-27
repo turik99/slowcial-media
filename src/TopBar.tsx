@@ -1,21 +1,27 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState} from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { AuthenticatedUser, OnceUser } from "./types"
 import { ReactComponent as BackButton } from "./images/back_arrow.svg"
 import { ReactComponent as Check } from "./images/check.svg"
 import axios from "axios"
-import { AuthedUser } from "./App"
+
 import { useDetectClickOutside } from "react-detect-click-outside"
+import { useAuth } from "./AuthenticatedUserContext"
 
 
-function TopBar() {
+export interface TopBarProps{ 
+    authenticatedUser: AuthenticatedUser
+}
+
+
+function TopBar(props: TopBarProps) {
 
     const location = useLocation()
     const pathname = location.pathname
     let navigate = useNavigate()
     const [friendRequests, setFriendRequests] = useState<OnceUser[]>([])
 
-    const authenticatedUser = useContext(AuthedUser)
+    const authenticatedUser = props.authenticatedUser
 
     var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
@@ -47,10 +53,10 @@ function TopBar() {
             {backButton}
             <NotificationsButton friendRequests={friendRequests} />
             <p style={{ fontSize: "32px", marginRight: "12px" }}>{authenticatedUser.username}</p>
-            <img onClick={navigateToProfile} width={"48px"} height={"48px"} style={{
-                borderRadius: "50%", borderWidth: "4px",
-                borderStyle: "solid", borderColor: "#FAFF00", marginRight: "12px"
-            }} src={authenticatedUser.userPfp}></img>
+                <img onClick={navigateToProfile} width={"48px"} height={"48px"} style={{
+                    borderRadius: "50%", borderWidth: "4px",
+                    borderStyle: "solid", borderColor: "#FAFF00", marginRight: "12px"
+                }} src={authenticatedUser.userPfp}></img>            
         </div>)
 
     function navigateToProfile() {
@@ -76,7 +82,6 @@ export interface NotificationsButtonProps {
 }
 
 export const NotificationsButton = (props: NotificationsButtonProps) => {
-    const authenticatedUser = useContext(AuthedUser)
     const [showNotifications, setShowNotifications] = useState(false)
     const ref = useDetectClickOutside({ onTriggered: () => { 
         setShowNotifications(false) } })
@@ -84,10 +89,7 @@ export const NotificationsButton = (props: NotificationsButtonProps) => {
         return(<FriendRequestItem requestingUser={x} />)
     })
     var className = "border_div"
-    if (outputButtons.length === 0){
-        className = ""
-    }
-
+    outputButtons.push(<p className="small_text">No friend requests...</p>)
     var dropDown = <div className={className} style={{position:"absolute", left: 0, top: 40, width: "280px"}}>
         {outputButtons}
     </div>
@@ -95,7 +97,7 @@ export const NotificationsButton = (props: NotificationsButtonProps) => {
     return (<div ref={ref} style={{position: "relative", display: "flex", flexDirection: "column"}}>
         <button onClick={()=>{
             setShowNotifications(!showNotifications)
-        }} style={{fontSize: "32px", margin: 0}}>👥</button>
+        }} className="small_button" style={{fontSize: "32px", margin: 0}}>👥</button>
         {showNotifications && dropDown}
     </div>)
 }
@@ -106,8 +108,7 @@ export interface FriendRequestItemProps {
     requestingUser: OnceUser
 }
 export const FriendRequestItem = (props: FriendRequestItemProps) => {
-
-    const authenticatedUser = useContext(AuthedUser)
+    const authenticatedUser = useAuth()
     const [accepted, setAccepted] = useState(false)
     const acceptedButton = <button
     style={{marginRight: "12px", minWidth: "110px"}} className="small_button" >Accepted ✅</button>

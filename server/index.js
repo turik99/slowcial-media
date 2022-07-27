@@ -528,53 +528,27 @@ mongoClient.connect().then(() => {
     //unix time in 24 hours: 86400
     const authToken = req.query.authToken
     const phoneNumber = req.query.phoneNumber
-    verifyToken(authToken, phoneNumber).then(
-      user => {
-        console.log("token verify result", user)
-        console.log("running verify block true")
-        var friends = user.friends
-        var friendsIds = []
-        console.log("user friends test", friends)
-        if (friends != null) {
-          for (var x = 0; x < friends.length; x++) {
-            friendsIds.push(new ObjectId(friends[x]))
-          }
-          //we want to show the self's posts so we add their id to friends to timeline
-          friendsIds.push(user._id)
 
-          var numberOfPosts = friendsIds.length * 2
-
-
-          var timeline = []
-          console.log("friends ids test", friendsIds)
-          postsCollection.find({
-            "userID": { "$in": friendsIds },
-          })
-            .limit(numberOfPosts)
-            .sort({ "timeStamp": -1 })
-            .toArray((error, result) => {
-              if (error) {
-                res.status(500).send("")
-              }
-              if (result) {
-                console.log("result from toArray", result)
-                for (var i = 0; i < result.length; i++) {
-                  timeline.push(result[i])
-                }
-                res.status(200).send(timeline)
-
-
-              }
-              else {
-                res.status(500).send("")
-              }
-            })
-        }
-        else {
-          res.status(200).send([])
-        }
+    try{
+      console.log("trying")
+      const {friends, _id} = await verifyToken(authToken, phoneNumber)
+      console.log("friends", friends)
+      var timelinePosts = []
+      var friendIDs = []
+      for (var x = 0; x<friends.length; x++){
+        console.log("friends x", friends[x])
+        friendIDs.push(friends[x])
+        friendIDs.push(_id)
       }
-    )
+      if (friendIDs.length > 0){
+        timelinePosts = await postsCollection.find({ userID: {$in: friendIDs } }).sort("timeStamp", -1).limit(10).toArray()
+      }
+      console.log("posts", timelinePosts)
+      res.status(200).send(timelinePosts)
+    }
+    catch(error){
+      console.log("FUCK FUCKK FUCK", error)
+    }
 
 
   })
@@ -587,17 +561,7 @@ mongoClient.connect().then(() => {
       .then(user => {
         console.log("testing get user", user)
         if (user != null) {
-          if (user.phoneNumber === phoneNumber) {
-            console.log("user found in get user", user)
-            var userWithoutPhone = user
-            delete userWithoutPhone.phoneNumber
-            res.status(200).send(userWithoutPhone)
-
-          }
-          else {
-            console.log("user found in get user, but phone didn't match", user)
-            res.status(500).send("error invalid phone")
-          }
+          res.status(200).send(user)
         }
         else {
           res.status(500).send("error invalid auth token")
@@ -806,18 +770,16 @@ mongoClient.connect().then(() => {
     try {
       const user = await usersCollection.findOne({ "authToken": authToken })
 
-      console.log("found by user token ", user)
+      console.log("found user by token ", user)
       //check if the user's local phone number matches the token they searched for
       if (user.phoneNumber === phoneNumber) {
         // res.status(200).send("auth is good!")
         console.log("found user and phone matched")
         return (user)
       }
-      else {
-        console.log("found user and phone did not match")
-        //if they dont' match send them home
-        // res.status(401).send("incorrect auth")
-        throw (error)
+
+      else{
+        throw ("")
       }
     }
     catch (error) {

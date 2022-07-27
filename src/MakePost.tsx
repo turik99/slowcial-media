@@ -33,7 +33,7 @@ function MakePost(props: MakePostProps) {
         style={{ display: "none" }}
         type="file" accept="image/jpg,image/png,image/jpeg" onChange={(event) => {
             if (event.target.files != null) {
-                const newFileName: string = makeid(8) + event.target.files[0].name
+                const newFileName: string = makeid(8) +  (event.target.files[0].name).replaceAll(/[^a-z0-9]/gi, "").replaceAll(" ", "")
                 var file: File = new File([event.target.files[0]], newFileName)
                 setFileUpload(file)
             }

@@ -44,9 +44,7 @@ function FindFriends(props: FindFriendsProps) {
 
             </div>
             <div style={{ height: "1px", backgroundColor: "grey", width: "100%" }}></div>
-        </div>
-
-        )
+        </div>)
     }
 
     interface ResultsProps {
