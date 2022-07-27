@@ -25,7 +25,7 @@ function App() {
   const navigate = useNavigate()
 
 
-  var baseURL = "http://slowcial-media.herokuapp.com"
+  var baseURL = "https://slowcial-media.herokuapp.com"
   if (window.location.href.includes("localhost")) {
     baseURL = ""
   }

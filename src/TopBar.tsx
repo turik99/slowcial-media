@@ -23,7 +23,7 @@ function TopBar(props: TopBarProps) {
 
     const authenticatedUser = props.authenticatedUser
 
-    var baseURL = "http://slowcial-media.herokuapp.com"
+    var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
         baseURL=""
     }
@@ -66,7 +66,7 @@ function TopBar(props: TopBarProps) {
 
 export async function acceptFriendRequest(friendID: string, _id: string) {
 
-    var baseURL = "http://slowcial-media.herokuapp.com"
+    var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
         baseURL=""
     }

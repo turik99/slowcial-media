@@ -39,7 +39,7 @@ function Profile(props: ProfileProps) {
     const [filename, setFileName] = useState<string>("")
     const [userPfp, setUserPfp] = useState<string>(userToView.userPfp)
 
-    var baseURL = "http://slowcial-media.herokuapp.com"
+    var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
       baseURL=""
     }
@@ -210,7 +210,7 @@ function Profile(props: ProfileProps) {
 
     function unsendFriendRequest() {
 
-        var baseURL = "http://slowcial-media.herokuapp.com"
+        var baseURL = "https://slowcial-media.herokuapp.com"
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }
@@ -280,7 +280,7 @@ export async function uploadProfilePicture(authToken: string, imageKey: string, 
 }
 
 export function sendFriendRequest(friendID: string, authToken: string, phoneNumber: string) {
-    var baseURL = "http://slowcial-media.herokuapp.com"
+    var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
         baseURL=""
     }

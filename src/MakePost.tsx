@@ -15,7 +15,7 @@ function MakePost(props: MakePostProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null)
 
-    var baseURL = "http://slowcial-media.herokuapp.com"
+    var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
       baseURL=""
     }

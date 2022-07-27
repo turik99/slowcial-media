@@ -17,7 +17,7 @@ function ProfileTimeLine(props: ProfileTimeLineProps) {
     //Get posts and render them inline one after another in time order.
     //Paginate by Day and allow user to render more. 
     const [timelinePosts, setTimelinePosts] = useState(Array<PostType>)
-    var baseURL = "http://slowcial-media.herokuapp.com"
+    var baseURL = "https://slowcial-media.herokuapp.com"
     if (window.location.href.includes("localhost")){
         baseURL = ""
     }
