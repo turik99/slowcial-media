@@ -71,7 +71,7 @@ function SignUp() {
                         if (response.data.userExists === true) {
                             if (response.data.userIsFinished === true){
                                 navigate("/home")
-                                
+                                window.location.reload()
                             }
                             else{
                                 navigate("/finishsignup")

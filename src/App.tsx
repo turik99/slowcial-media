@@ -80,7 +80,7 @@ function App() {
   return (
     <AuthProvider >
       <div style={style}>
-        <div style={{position: "fixed", width: "480px", zIndex: 10, background: "white", boxSizing: "border-box"}}>
+        <div style={{position: "fixed", width: "100%", zIndex: 10, background: "white", boxSizing: "border-box"}}>
           {topBar}
         </div>
         <div style={{marginTop: 72, width: "100%"}}>        
