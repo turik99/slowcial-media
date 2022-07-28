@@ -191,7 +191,7 @@ async function unsendFriendRequest(authToken, friendID, _id) {
 app.get("/api/unsend_friend_request", async (req, res) => {
   var authToken = req.query.authToken
   var friendID = req.query.friendID
-  var _id = rq.query._id
+  var _id = req.query._id
   try {
     const unsendRes = await unsendFriendRequest(authToken, friendID, _id)
     res.status(200).send(unsendRes)
