@@ -789,11 +789,11 @@ mongoClient.connect().then(() => {
   }
 
 
-  if (process.env.NODE_ENV === "production" ||process.env.NODE_ENV === "test"){
+  if (1){
     app.use(express.static(path.join(__dirname, 'build')));
     app.use(cors())
     console.log("running in production")
-    app.get('/*', function (req, res) {
+    app.get('/', function (req, res) {
       res.sendFile(path.join( __dirname, "..", 'build', 'index.html'));
     });
 
