@@ -86,7 +86,6 @@ aws.config.update({
 
 
 
-app.use(cors())
 
 mongoClient.connect().then(() => {
   mongoDatabase = mongoClient.db(dbName)
@@ -789,26 +788,28 @@ mongoClient.connect().then(() => {
 
   }
 
-
-
-  if (process.env.NODE_ENV === "production") {
-    app.use(cors())
-    app.use(express.static(publicPath));
-    Router(app)
-    app.get("/", (req, res) => {
-      res.setHeader('Cache-Control', 'no-cache');
-
-      res.sendFile(path.join(publicPath, "index.html"))
-    })
-  }
-
   app.listen(port, () => {
     console.log(`[server]: Server is running at https://localhost:${port}`);
   });
 
 
 
+
+
+
 })
+
+if (process.env.NODE_ENV === "production") {
+  app.use(cors())
+  app.use(express.static(publicPath));
+  Router(app)
+  app.get("/", (req, res) => {
+    res.setHeader('Cache-Control', 'no-cache');
+
+    res.sendFile(path.join(publicPath, "index.html"))
+  })
+}
+
 
 function makeid(length) {
   var result = '';
