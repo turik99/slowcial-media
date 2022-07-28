@@ -55,7 +55,7 @@ function SignUp() {
 
 
     function verifySMSCode() {
-        var baseURL = "https://slocial-media.herokuapp.com"
+        var baseURL = "https://slowcial-media.herokuapp.com"
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }
