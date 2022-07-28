@@ -20,7 +20,7 @@ function FinishSignUp() {
     }
     useEffect(() => {
         if (username !== "") {
-            axios.get(baseURL + "/check_username",  { params: { "username": username } })
+            axios.get(baseURL + "/api/check_username",  { params: { "username": username } })
                 .then(result => {
                     if (result.status === 200) {
                         setAvailableMessage("available")
@@ -67,7 +67,7 @@ function FinishSignUp() {
         var formData = new FormData()
         formData.append("pfp", fileUpload)
         return new Promise((resolve, reject)=>{
-            axios.post(baseURL + "/upload_pfp", formData, { params: { authToken: authToken, phoneNumber: phoneNumber } })
+            axios.post(baseURL + "/api/upload_pfp", formData, { params: { authToken: authToken, phoneNumber: phoneNumber } })
             .then(response => {
                 if (response.status === 200) {
                     console.log("success uploading pfp", response.data)
@@ -84,7 +84,7 @@ function FinishSignUp() {
     }
 
     function finishSignUp() {
-        axios.get(baseURL + "/finish_signup",  { params: { authToken: authToken, username: username, userPfp: filename } })
+        axios.get(baseURL + "/api/finish_signup",  { params: { authToken: authToken, username: username, userPfp: filename } })
             .then(result => {
                 if (result.status === 500) {
                     if (result.data === "username taken") {

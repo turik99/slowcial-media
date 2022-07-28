@@ -82,7 +82,7 @@ function MakePost(props: MakePostProps) {
         var data = new FormData()
         data.append("user_image", fileUpload)
         return new Promise((resolve, reject) => {
-            axios.post(baseURL + "/upload_user_image", data, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "imageKey": fileUpload.name } })
+            axios.post(baseURL + "/api/upload_user_image", data, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "imageKey": fileUpload.name } })
                 .then(response => {
                     if (response.status === 200) {
                         console.log("success uploading image", response.data)
@@ -119,7 +119,7 @@ function MakePost(props: MakePostProps) {
 
         if (fileUpload.name !== "") {
             uploadImage().then(result => {
-                axios.get(baseURL + "/make_post",  {
+                axios.get(baseURL + "/api/make_post",  {
                     params: {
                         authToken: authToken, userID: props.authenticatedUser._id, userImage: fileUpload.name,
                         description: description, phoneNumber: phoneNumber

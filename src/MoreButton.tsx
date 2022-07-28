@@ -46,7 +46,7 @@ function MoreButton(props: MoreButtonProps){
             baseURL = ""
         }
         var imgKey = props.post.imgUrl.substring(props.post.imgUrl.lastIndexOf("/")+1, props.post.imgUrl.length)
-        axios.delete(baseURL +   "/delete_post",  {params: {"_id": props.post._id, "authToken": authToken, "userID": props.authenticatedUser._id, 
+        axios.delete(baseURL + "/api/delete_post",  {params: {"_id": props.post._id, "authToken": authToken, "userID": props.authenticatedUser._id, 
             "imageKey": imgKey}})
         .then(result => {
             if (result.status === 200){

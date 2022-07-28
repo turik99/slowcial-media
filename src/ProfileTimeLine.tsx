@@ -24,7 +24,7 @@ function ProfileTimeLine(props: ProfileTimeLineProps) {
 
     useEffect(() => {
         // Run! Like go get some data from an API.
-        axios.get(baseURL +  "/get_user_posts", {
+        axios.get(baseURL + "/api/get_user_posts", {
             params: {
                 "userID": props.userToView._id
             }

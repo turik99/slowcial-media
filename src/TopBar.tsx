@@ -30,7 +30,7 @@ function TopBar(props: TopBarProps) {
 
     useEffect(() => {
         Promise.all(authenticatedUser.incomingFriendRequests.map(x => {
-            return axios.get(baseURL + "/get_user", { params: { "_id": x } })
+            return axios.get(baseURL + "/api/get_user", { params: { "_id": x } })
         })).then(results => {
             if (results) {
                 console.log("top test", results)
@@ -71,7 +71,7 @@ export async function acceptFriendRequest(friendID: string, _id: string) {
         baseURL=""
     }
         try{
-            const acceptRes = await axios.get(baseURL + "/accept_friend_request", { params: { "_id": _id, "friendID": friendID } })
+            const acceptRes = await axios.get(baseURL + "/api/accept_friend_request", { params: { "_id": _id, "friendID": friendID } })
         }
         catch(error){
 

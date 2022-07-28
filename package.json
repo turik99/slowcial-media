@@ -40,14 +40,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "production": "node server/index.js",
-    "dev": "concurrently \"nodemon server/index.js\"  \"npm run start\"",
-    "start": "PORT=8080 react-scripts start",
+    "start": "node server/index.js",
+    "dev": "concurrently \"nodemon server/index.js\"  \"npm run start_client\"",
+    "start_client": "PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://localhost:4999",
+  "proxy": "http://localhost:4999",
   "eslintConfig": {
     "extends": [
       "react-app",

@@ -216,7 +216,7 @@ function Profile(props: ProfileProps) {
         }
     
 
-        axios.get(baseURL + "/unsend_friend_request",  { params: { "authToken": authToken, "phoneNumber": phoneNumber, "friendID": userToView._id } })
+        axios.get(baseURL + "/api/unsend_friend_request",  { params: { "authToken": authToken, "phoneNumber": phoneNumber, "friendID": userToView._id } })
             .then(result => {
                 if (result.status === 200) {
                     setStatus("not friends")
@@ -225,7 +225,7 @@ function Profile(props: ProfileProps) {
     }
 
     function unfriend() {
-        axios.get(baseURL + "/unfriend",  { params: { "friendID": userToView._id, "authToken": authToken, "phoneNumber": phoneNumber } })
+        axios.get(baseURL + "/api/unfriend",  { params: { "friendID": userToView._id, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
                     setStatus("not friends")
@@ -286,7 +286,7 @@ export function sendFriendRequest(friendID: string, authToken: string, phoneNumb
     }
     
     return new Promise<string>((resolve, reject) => {
-        axios.get(baseURL + "/send_friend_request", { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
+        axios.get(baseURL + "/api/send_friend_request", { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
                     resolve("request sent")

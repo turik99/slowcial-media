@@ -36,7 +36,7 @@ function ImagePost(props: ImagePostProps) {
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }
-        axios.get(baseURL + "/like_post", { params: { "_id": props.post._id, "userID": props.authenticatedUser._id } })
+        axios.get(baseURL + "/api/like_post", { params: { "_id": props.post._id, "userID": props.authenticatedUser._id } })
             .then(result => {
                 if (result.status === 200) {
                     setLiked(!liked)

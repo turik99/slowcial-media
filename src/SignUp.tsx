@@ -61,7 +61,7 @@ function SignUp() {
         }
         var phone = "+" + phoneNumber
         var timeCreated: number = Math.round((new Date().getTime()) / 1000)
-        axios.get<VerifySMSResponseType>(baseURL + "/verify_sms_code", { params: { phoneNumber: phone, smsCode: smsCode, timeCreated: timeCreated } })
+        axios.get<VerifySMSResponseType>(baseURL + "/api/verify_sms_code", { params: { phoneNumber: phone, smsCode: smsCode, timeCreated: timeCreated } })
             .then(
                 (response) => {
                     console.log("response from phone verif", response)
@@ -96,7 +96,7 @@ function SignUp() {
         }
     
         var phone = "+"+phoneNumber
-        axios.get( baseURL +  "/send_sms_code", { params: { phoneNumber: phone } })
+        axios.get( baseURL + "/api/send_sms_code", { params: { phoneNumber: phone } })
             .then((response) => {
                 console.log("send code res", response)
                 if (response.status === 200) {

@@ -92,7 +92,7 @@ mongoClient.connect().then(() => {
   var usersCollection = mongoDatabase.collection("users")
   var postsCollection = mongoDatabase.collection("posts")
 
-  app.get("/send_sms_code", (req, res) => {
+  app.get("/api/send_sms_code*", (req, res) => {
     console.log("query test send code", req.query.phoneNumber)
     var phone = req.query.phoneNumber
 
@@ -123,7 +123,7 @@ mongoClient.connect().then(() => {
 
 
 
-  app.get("/send_friend_request", (req, res) => {
+  app.get("/api/send_friend_request", (req, res) => {
     var authToken = req.query.authToken
     var phoneNumber = req.query.phoneNumber
     var friendID = new ObjectId(req.query.friendID)
@@ -145,7 +145,7 @@ mongoClient.connect().then(() => {
       })
   })
 
-  app.get("/unfriend", (req, res) => {
+  app.get("/api/unfriend", (req, res) => {
     var authToken = req.query.authToken
     var friendID = new ObjectId(req.query.friendID)
     usersCollection.findOneAndUpdate({ "authToken": authToken }, { $pull: { "friends": friendID } })
@@ -184,7 +184,7 @@ mongoClient.connect().then(() => {
     }
   }
 
-  app.get("/unsend_friend_request", async (req, res) => {
+  app.get("/api/unsend_friend_request", async (req, res) => {
     var authToken = req.query.authToken
     var friendID = req.query.friendID
     var _id = rq.query._id
@@ -226,7 +226,7 @@ mongoClient.connect().then(() => {
 
   }
 
-  app.get("/accept_friend_request", async (req, res) => {
+  app.get("/api/accept_friend_request", async (req, res) => {
 
     console.log("accept req", req.query)
     const friendID = req.query.friendID
@@ -244,7 +244,7 @@ mongoClient.connect().then(() => {
 
 
 
-  app.get("/check_username", (req, res) => {
+  app.get("/api/check_username", (req, res) => {
     console.log("check username")
     const username = req.query.username
     usersCollection.findOne({ "username": username }).then(
@@ -262,7 +262,7 @@ mongoClient.connect().then(() => {
       })
   })
 
-  app.get("/search_users", (req, res) => {
+  app.get("/api/search_users", (req, res) => {
     console.log("search users", req.query)
     const searchTerm = req.query.searchTerm
     usersCollection.find({ "username": { "$regex": searchTerm } }, { projection: { "_id": 1, "username": 1, "userPfp": 1, timeCreated: 1 } })
@@ -326,7 +326,7 @@ mongoClient.connect().then(() => {
     }
   }
 
-  app.get("/verify_sms_code", async (req, res) => {
+  app.get("/api/verify_sms_code", async (req, res) => {
     const phone = req.query.phoneNumber
     const smsCode = req.query.smsCode
     const timeCreated = Math.round(new Date().getTime() / 1000)
@@ -359,7 +359,7 @@ mongoClient.connect().then(() => {
     }
   }
 
-  app.get("/delete_user_image", (req, res) => {
+  app.get("/api/delete_user_image", (req, res) => {
     var imageKey = req.query.imageKey
     var authToken = req.query.authToken
     deleteUserImage(imageKey, authToken).then(response => {
@@ -421,7 +421,7 @@ mongoClient.connect().then(() => {
   }
 
 
-  app.delete("/delete_profile_picture", async (req, res) => {
+  app.delete("/api/delete_profile_picture", async (req, res) => {
     var authToken = req.query.authToken
     var imageKey = req.query.imageKey
     try {
@@ -437,7 +437,7 @@ mongoClient.connect().then(() => {
   })
 
 
-  app.get("/add_friend", (req, res) => {
+  app.get("/api/add_friend", (req, res) => {
 
   })
 
@@ -452,7 +452,7 @@ mongoClient.connect().then(() => {
     }
   }
 
-  app.delete("/delete_post", async (req, res) => {
+  app.delete("/api/delete_post", async (req, res) => {
     console.log("ran delete post", req.query)
     var authToken = req.query.authToken
     var _id = req.query._id
@@ -468,7 +468,7 @@ mongoClient.connect().then(() => {
   })
 
 
-  app.get("/like_post", (req, res) => {
+  app.get("/api/like_post", (req, res) => {
     console.log('ran like post', req.query)
     var _id = new ObjectId(req.query._id)
     var userID = new ObjectId(req.query.userID)
@@ -515,8 +515,8 @@ mongoClient.connect().then(() => {
 
   })
 
-  app.get("/get_timeline", async (req, res) => {
-    console.log("/get_timeline")
+  app.get("/api/get_timeline", async (req, res) => {
+    console.log("/api/get_timeline")
     /* 1. find user
     2. find user's friends
     3. gather friends post for today and yesterday and tmw
@@ -553,7 +553,7 @@ mongoClient.connect().then(() => {
 
   })
 
-  app.get("/get_user_by_auth_token", (req, res) => {
+  app.get("/api/get_user_by_auth_token", (req, res) => {
     console.log("ran get user by auth", req.query)
     var phoneNumber = req.query.phoneNumber
     usersCollection.findOne(
@@ -574,7 +574,7 @@ mongoClient.connect().then(() => {
       })
   })
 
-  app.get("/get_user", (req, res) => {
+  app.get("/api/get_user", (req, res) => {
     console.log("ran get user", req.query)
     usersCollection.findOne(
       { "_id": new ObjectId(req.query._id) },
@@ -590,7 +590,7 @@ mongoClient.connect().then(() => {
       })
   })
 
-  app.get("/get_user_posts", (req, res) => {
+  app.get("/api/get_user_posts", (req, res) => {
     var userID = req.query.userID
     var timeline = []
     try {
@@ -616,7 +616,7 @@ mongoClient.connect().then(() => {
   })
 
 
-  app.post("/update_profile_picture", upload.single("pfp"), async (req, res) => {
+  app.post("/api/update_profile_picture", upload.single("pfp"), async (req, res) => {
     const authToken = req.query.authToken
     const imageKey = req.query.imageKey
     console.log("update profile picture")
@@ -638,12 +638,12 @@ mongoClient.connect().then(() => {
 
   })
 
-  app.post("/upload_pfp", upload.single("pfp"), (req, res) => {
+  app.post("/api/upload_pfp", upload.single("pfp"), (req, res) => {
     console.log("upload profile picture")
     res.status(200).send("file upload succes")
   })
 
-  app.post("/upload_user_image", uploadUserImage.single("user_image"), (req, res) => {
+  app.post("/api/upload_user_image", uploadUserImage.single("user_image"), (req, res) => {
     console.log("upload user image params", req.query)
     usersCollection.findOne({ "authToken": req.query.authToken }).then(user => {
       if (user) {
@@ -667,7 +667,7 @@ mongoClient.connect().then(() => {
   })
 
 
-  app.get("/get_time_of_last_post", (req, res) => {
+  app.get("/api/get_time_of_last_post", (req, res) => {
     console.log("get time of last post")
     const userID = req.query.userID
     postsCollection.findOne({ "userID": new ObjectId(userID) }, { projection: { "timeStamp": 1 } })
@@ -688,7 +688,7 @@ mongoClient.connect().then(() => {
       )
   })
 
-  app.get("/make_post", (req, res) => {
+  app.get("/api/make_post", (req, res) => {
 
     var phoneNumber = req.query.phoneNumber
     var authToken = req.query.authToken
@@ -730,7 +730,7 @@ mongoClient.connect().then(() => {
 
   })
 
-  app.get("/finish_signup", (req, res) => {
+  app.get("/api/finish_signup", (req, res) => {
     var authToken = req.query.authToken
     var username = req.query.username
     var pfp = req.query.userPfp
@@ -788,6 +788,16 @@ mongoClient.connect().then(() => {
 
   }
 
+
+  if (process.env.NODE_ENV === "production" ||process.env.NODE_ENV === "test"){
+    app.use(express.static(path.join(__dirname, 'build')));
+    app.use(cors())
+    console.log("running in production")
+    app.get('/*', function (req, res) {
+      res.sendFile(path.join( __dirname, "..", 'build', 'index.html'));
+    });
+
+  }
   app.listen(port, () => {
     console.log(`[server]: Server is running at https://localhost:${port}`);
   });
@@ -796,19 +806,8 @@ mongoClient.connect().then(() => {
 
 
 
-
 })
 
-if (process.env.NODE_ENV === "production") {
-  app.use(cors())
-  app.use(express.static(publicPath));
-  Router(app)
-  app.get("/", (req, res) => {
-    res.setHeader('Cache-Control', 'no-cache');
-
-    res.sendFile(path.join(publicPath, "index.html"))
-  })
-}
 
 
 function makeid(length) {
