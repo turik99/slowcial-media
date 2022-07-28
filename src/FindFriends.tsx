@@ -14,10 +14,16 @@ function FindFriends(props: FindFriendsProps) {
     const [results, setResults] = useState<OnceUser[]>([])
 
     const debounceSearch = debounce(value => setSearchTerm(value), 200);
+    
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")) {
+      baseURL = ""
+    }
+  
 
     useEffect(() => {
         if (searchTerm !== "") {
-            axios.get<OnceUser[]>("/search_users", { params: { "searchTerm": searchTerm } })
+            axios.get<OnceUser[]>(baseURL + "/search_users", { params: { "searchTerm": searchTerm } })
                 .then(result => {
                     var r: OnceUser[] = []
                     result.data.map(x => { r.push(x) })
