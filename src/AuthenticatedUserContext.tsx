@@ -1,11 +1,5 @@
-import React, { useState, useContext, useEffect, createContext } from "react"
+import React, { useState, Dispatch, SetStateAction,  useEffect, createContext } from "react"
 import { AuthenticatedUser } from "./types"
-
-
-export interface AuthContextType{
-    authenticatedUser: AuthenticatedUser
-    setAuthenticatedUser: (arg: AuthenticatedUser)=>void
-}
 
 
 
@@ -18,36 +12,32 @@ export const blankUser = {
     authToken: "",
     friends: [""],
     phoneNumber: "",
-    outgoingFriendRequests: [],
-    incomingFriendRequests: []
+    outgoingFriendRequests: [] as string[],
+    incomingFriendRequests: [] as string[]
 }
 
-const AuthContext = createContext<AuthenticatedUser >(blankUser)
-
-export function useAuth(){
-    return useContext(AuthContext)
-}
-export function useUpdateAuth(arg: any): (arg: any)=>void {
-    return useContext(UpdateAuthContext)
+export interface AuthContextType{
+    authenticatedUser: AuthenticatedUser,
+    setAuthenticatedUser: Dispatch<SetStateAction<AuthenticatedUser>>
 }
 
-const UpdateAuthContext = createContext<any>(null)
+const authContextDefaultValue:AuthContextType = {
+    authenticatedUser: blankUser as AuthenticatedUser,
+    setAuthenticatedUser: authenticatedUser => {}
+}
+
+export const AuthContext = createContext(authContextDefaultValue)
 // wrapper for the provider
-export function AuthProvider ({ children }: any) {
-    const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser>(blankUser);
+export const AuthProvider = (props: any) => {
+    const [authenticatedUser, setAuthenticatedUser] = useState(authContextDefaultValue.authenticatedUser);
 
-    function setUser(user: AuthenticatedUser){
-        setAuthenticatedUser(user)
-    }
+    useEffect(()=>{
+        console.log("state changed", authenticatedUser)
+    })
 
     return (
-        <AuthContext.Provider value={authenticatedUser}>
-            <UpdateAuthContext.Provider value = {(user: any) => {
-                setUser(user)
-            }}>
-                {children}
-
-            </UpdateAuthContext.Provider>
+        <AuthContext.Provider value={{authenticatedUser, setAuthenticatedUser}}>
+            {props.children}
         </AuthContext.Provider >
 
     )

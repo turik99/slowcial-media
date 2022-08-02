@@ -1,100 +1,138 @@
 import axios from "axios"
 import React, { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import { DateHeader } from "./Home"
+import {ReactComponent as Plus} from "./images/plus2.svg"
 import { AuthenticatedUser } from "./types"
 
 export interface MakePostProps {
-    authenticatedUser: AuthenticatedUser
+    authenticatedUser: AuthenticatedUser,
 }
 function MakePost(props: MakePostProps) {
     const authToken = props.authenticatedUser.authToken
-    const phoneNumber = props.authenticatedUser.phoneNumber
-    const navigate = useNavigate()
     const [description, setDescription] = useState("")
     const [fileUpload, setFileUpload] = useState<File>(new File([], ""))
 
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const [todaysPrompt, setTodaysPrompt] = useState("")
+
+    useEffect(()=> {
+        getTodaysPrompt().then(res => {
+            setTodaysPrompt(res)
+        })
+    }, [])
 
     var baseURL = "https://slowcial-media.herokuapp.com"
-    if (window.location.href.includes("localhost")){
-      baseURL=""
+    if (window.location.href.includes("localhost")) {
+        baseURL = ""
     }
 
     var xButton = <></>
     if (fileUpload.name !== "") {
         xButton = <button onClick={() => {
             removeImage()
-        }} style={{ background: "white", borderWidth: "2px", borderStyle: "solid", borderRadius: '8px', position: "absolute", right: 0, top: 0 }} >X</button>
+        }} className="small_button" style={{ position: "absolute", right: 0, top: 0 }} >❌</button>
     }
 
 
-    var imageInput = <input
+    var hiddenImageInput = <input
         ref={fileInputRef}
         style={{ display: "none" }}
         type="file" accept="image/jpg,image/png,image/jpeg" onChange={(event) => {
             if (event.target.files != null) {
-                const newFileName: string = makeid(8) +  (event.target.files[0].name).replaceAll(/[^a-z0-9]/gi, "").replaceAll(" ", "")
+                const newFileName: string = makeid(8) + (event.target.files[0].name).replaceAll(/[^a-z0-9]/gi, "").replaceAll(" ", "")
                 var file: File = new File([event.target.files[0]], newFileName)
                 setFileUpload(file)
             }
         }}></input>
 
     var imageInputStyled = <></>
+    var postButton = <></>
     if (fileUpload.name === "") {
-        imageInputStyled = <button style={{
-            position: "absolute", bottom: "50%", background: "#FFFFFF", borderWidth: "2px",
-            borderStyle: "solid", borderColor: "black", fontSize: "32px", zIndex: 0
-        }} onClick={() => {
+        imageInputStyled = <button className="medium_button" style={{
+            position: "absolute", bottom: "50%", width: "auto"}} onClick={() => {
             if (fileInputRef.current != null) {
                 fileInputRef.current.click()
             }
-        }}>Choose Image</button>
+        }}>Choose photo <Plus style={{marginBottom: -4}} width={"20px"} /></button>
+        postButton = <button className="medium_button"style={{
+            opacity: 0.3,
+            marginTop: '12px',
+            marginLeft: "-2px",
+            height: "42px",
+            width: "calc(100% + 4px)",
+            marginBottom: -2
+        }} >Post</button>
+    }
+    else{
+        postButton = <button className="medium_button" style={{
+            marginTop: '12px',
+            marginLeft: "-2px",
+            height: "42px",
+            width: "calc(100% + 4px)",
+            marginBottom: -2
+        }} onClick={() => {
+            makePost(authToken, props.authenticatedUser._id, fileUpload.name, description)
+                .then(result => {
+                    window.location.reload()
+                }).catch(() => { window.alert("An error occured. Try again later.") })
+        }}>Post</button>
+    }
+
+    var imageView = <img style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "contain", zIndex: -10 }}
+        src={URL.createObjectURL(fileUpload)}></img>
+
+
+    if (fileUpload.name === "") {
+        imageView = <></>
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "start", width: "100%" }}>
-            <p style={{ fontSize: "32px", margin: "12px" }}>{getDateStringFromUnixTime(new Date().getTime() / 1000)}</p>
+        <div className="border_div" style={{ display: "flex", flexDirection: "column", alignItems: "start", width: "calc(100% - 4px)", marginTop: "12px" }}>
+            <div style={{display: "flex", margin: "12px"}}>
+                <p className="medium_text" style={{ margin: 0 }}>Make a post of:</p>
+                <p className="medium_text" style={{  margin: 0, marginLeft: "6px", textDecoration: "underline" }}>{todaysPrompt}</p>
+            </div>
+
             <div style={{
-                display: "flex", width: "100%", height: "480px", flexDirection: "column", justifyContent: "end", alignItems: "center",
-                borderRadius: "8px", borderStyle: "solid", borderWidth: "2px", borderColor: "black", position: 'relative'
+                display: "flex", padding: 0, width: "100%", height: "220px", flexDirection: "column", justifyContent: "end", alignItems: "center",
+                position: 'relative', boxSizing: "content-box"
             }}>
                 {xButton}
-                <img style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "contain", zIndex: -10 }}
-                    src={URL.createObjectURL(fileUpload)}></img>
-                {imageInput}
+                {imageView}
+                {hiddenImageInput}
                 {imageInputStyled}
-                <input placeholder="write a memorable caption" style={{ width: "100.8%", marginBottom: -1 }} className="special_input" type={"text"}
-                    onChange={(event) => {
-                        setDescription(event.target.value)
-                    }}></input>
-
             </div>
-            <button style={{
-                fontSize: "32px", width: "100%",
-                background: "#FAFF00", borderWidth: "2px",
-                borderColor: "black", borderRadius: "8px",
-                borderStyle: "solid", marginTop: "12px"
-            }} onClick={makePost}>Share</button>
+
+            <input placeholder="write a memorable caption" style={{
+                width: "calc(100% + 4px)", boxSizing: "border-box", marginLeft: "-2px"
+            }} className="special_input" type={"text"}
+                onChange={(event) => { setDescription(event.target.value) }}>
+            </input>
+
+
+
+
+            {postButton}
         </div>
     )
 
-    function uploadImage() {
+    function uploadImage(authToken: string, imageKey: string) {
         var data = new FormData()
         data.append("user_image", fileUpload)
         return new Promise((resolve, reject) => {
-            axios.post(baseURL + "/api/upload_user_image", data, { params: { "authToken": authToken, "phoneNumber": phoneNumber, "imageKey": fileUpload.name } })
+            axios.post(baseURL + "/api/upload_user_image", data, { params: { "authToken": authToken, "imageKey": imageKey } })
                 .then(response => {
                     if (response.status === 200) {
-                        console.log("success uploading image", response.data)
+                        //console.log("success uploading image", response.data)
                         resolve(response.data)
-
                     }
                     else {
                         reject()
                     }
                 })
                 .catch(error => {
-                    console.log("error from upload user image", error)
+                    //console.log("error from upload user image", error)
                     reject(error)
                 })
         })
@@ -105,43 +143,16 @@ function MakePost(props: MakePostProps) {
         setFileUpload(new File([], ""))
     }
 
-    // function deleteImage() {
-    //     axios.post(  "/delete_user_image", {}, { params: { "imageKey": imageKeyFilename, "authToken": authToken, "phoneNumber": phoneNumber } })
-    //         .then(result => {
-    //             if (result.status === 200) {
-    //                 setInputBackground(URL.createObjectURL(new Blob()))
-    //                 setPictureUploaded(false)
-    //             }
-    //         })
-    // }
-
-    function makePost() {
-
-        if (fileUpload.name !== "") {
-            uploadImage().then(result => {
-                axios.get(baseURL + "/api/make_post",  {
-                    params: {
-                        authToken: authToken, userID: props.authenticatedUser._id, userImage: fileUpload.name,
-                        description: description, phoneNumber: phoneNumber
-                    }
-                })
-                    .then(result => {
-                        if (result.status === 200) {
-                            navigate("/home")
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-            })
-                .catch(error => {
-                    console.log(error)
-                })
-
+    async function makePost(authToken: string, userID: string, imageKey: string, description: string) {
+        try {
+            const uploadRes = await uploadImage(authToken, imageKey)
+            await axios.get(baseURL + "/api/make_post", { params: { authToken, userID, imageKey, description } })
+            return "success"
         }
-        else {
-
+        catch (error) {
+            throw error
         }
+
 
     }
 
@@ -161,10 +172,24 @@ function MakePost(props: MakePostProps) {
 
 }
 
+export async function getTodaysPrompt(): Promise<string> {
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")) {
+        baseURL = ""
+    }
+
+    
+    try {
+        const val = await axios.get<string>(baseURL + "/api/get_todays_prompt")
+        return val.data
+    }
+    catch (error) {
+        throw error
+    }
+}
+
 
 export function getDateStringFromUnixTime(unixTime: number) {
-
-
     const MILLISECONDS_IN_SECONDS = 1000
     const nth = function (d: number) {
         if (d > 3 && d < 21) return 'th';

@@ -15,11 +15,11 @@ function StarButton(props: StarButtonProps) {
 
     var starStyle: CSSProperties = { width: "32px", height: "32px", fill: "white" }
     if (props.liked) {
-        console.log("star is liked")
+        //console.log("star is liked")
         starStyle = { width: "32px", height: "32px", fill: "#FAFF00" }
     }
     else{
-        console.log("star is not liked")
+        //console.log("star is not liked")
     }
 
     return (

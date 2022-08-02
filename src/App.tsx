@@ -6,7 +6,7 @@ import FinishSignUp from './FinishSignUp';
 import SignUp from './SignUp';
 import { useNavigate } from 'react-router-dom';
 import { CSSProperties, useEffect, useState } from 'react';
-import TimeLine from './TimeLine';
+import Home from './Home';
 import { AuthenticatedUser, OnceUser } from './types';
 import MakePost from './MakePost';
 import isMobile from 'is-mobile';
@@ -14,14 +14,15 @@ import TopBar from './TopBar';
 import Profile from './Profile';
 import FindFriends from './FindFriends';
 import ReactDOM from 'react-dom';
-import { AuthProvider, blankUser } from './AuthenticatedUserContext';
+import { AuthContext, AuthProvider, blankUser } from './AuthenticatedUserContext';
+import { random } from 'lodash';
 
 
 
 
 function App() {
 
-  const  [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser>(blankUser)
+  const  {authenticatedUser, setAuthenticatedUser} = useContext(AuthContext)
   const navigate = useNavigate()
 
 
@@ -37,17 +38,22 @@ function App() {
       axios.get<AuthenticatedUser>(baseURL + "/api/get_user_by_auth_token", { params: { authToken: authToken, phoneNumber: phoneNumber } })
         .then(response => {
           if (response.data.username == null) {
-            console.log("user doesn't have name yet", response.data)
+            // console.log("user doesn't have name yet", response.data)
             navigate("/finishsignup")
           }
           else {
             console.log("user does have name", response.data)
-            setAuthenticatedUser(response.data)
+            if (typeof setAuthenticatedUser !== "undefined"){
+              // setAuthenticatedUser(response.data as AuthenticatedUser)
+              var user:AuthenticatedUser = assignPropertiesToUser(response.data)
+              setAuthenticatedUser(user)
+
+            }
             navigate("/home")
           }
         })
         .catch(error => {
-          console.log(error)
+          //console.log(error)
           navigate("/signup")
         })
     }
@@ -69,21 +75,19 @@ function App() {
   var topBar = <></>
 
   if (authenticatedUser.username !== "") {
-    console.log("authed user check", authenticatedUser)
-    topBar = <TopBar authenticatedUser={authenticatedUser}/>
-    home = <TimeLine authenticatedUser={authenticatedUser} />
+    //console.log("authed user check", authenticatedUser)
+    topBar = <TopBar/>
+    home = <Home authenticatedUser={authenticatedUser} />
     profileComponent = <Profile authenticatedUser={authenticatedUser}/>
     findFriendsComponent = <FindFriends authenticatedUser={authenticatedUser} />
-    makePostComponent = <MakePost authenticatedUser={authenticatedUser} />
+    makePostComponent = <MakePost authenticatedUser={authenticatedUser}  />
   }
 
   return (
     <AuthProvider >
       <div style={style}>
-        <div style={{position: "fixed", width: "100%", zIndex: 10, background: "white", boxSizing: "border-box"}}>
           {topBar}
-        </div>
-        <div style={{marginTop: 72, width: "100%"}}>        
+        <div style={{ width: "100%"}}>        
           <Routes>
           <Route path="makepost" element={makePostComponent} />
           <Route path="signup" element={<SignUp />} />
@@ -99,6 +103,22 @@ function App() {
     </AuthProvider>
 
   );
+}
+
+export function assignPropertiesToUser(user: AuthenticatedUser):AuthenticatedUser { 
+  var output = blankUser
+  output._id = user._id
+  output.username = user.username
+  output.userPfp = user.userPfp
+  output.timeCreated = user.timeCreated
+  output.userImageKeys = user.userImageKeys
+  output.authToken = user.authToken
+  output.friends = user.friends
+  output.phoneNumber = user.phoneNumber
+  output.outgoingFriendRequests = user.outgoingFriendRequests
+  output.incomingFriendRequests = user.incomingFriendRequests
+
+  return output
 }
 
 export default App;

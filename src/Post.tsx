@@ -22,9 +22,9 @@ function Post(props: PostProps) {
         baseURL = ""
     }
     useEffect(() => {
-        axios.get(baseURL + "/api/get_user", { params: { "_id": props.post.userID } })
+        axios.get(baseURL + "/api/get_user_by_id", { params: { "_id": props.post.userID } })
             .then(userResult => {
-                console.log("user result from user bar", userResult)
+                //console.log("user result from user bar", userResult)
                 setUser(userResult.data)
             })
 

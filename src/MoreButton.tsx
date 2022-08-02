@@ -50,12 +50,12 @@ function MoreButton(props: MoreButtonProps){
             "imageKey": imgKey}})
         .then(result => {
             if (result.status === 200){
-                console.log(result)
+                //console.log(result)
                 props.setDeleted(true)
             }
         })
         .catch(error => {
-            console.log("error", error)
+            //console.log("error", error)
         })
     }
 

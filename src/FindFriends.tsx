@@ -29,6 +29,7 @@ function FindFriends(props: FindFriendsProps) {
                     result.data.map(x => { r.push(x) })
                     setResults(r)
                 })
+                .catch(error => { {window.alert("An error occured. Try again later.")} })
         }
         else {
             setResults([])

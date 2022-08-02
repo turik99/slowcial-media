@@ -19,7 +19,7 @@ function UserBar(props: UserBarProps) {
         borderColor: "black", alignItems: 'center', position: "relative"
     }}>
         <p onClick={navigateToProfile} style={{ fontSize: "22px", marginLeft: "12px" }}>{props.user.username}</p>
-        <img onClick={navigateToProfile} style={{ borderRadius: "50%", borderColor: "#FAFF00", borderWidth: "5px", borderStyle: "solid", marginLeft: "12px" }} width="37px" height="37px" src={props.user.userPfp}></img>
+        <img onClick={navigateToProfile} className="profile_picture" style={{ marginLeft: "12px" }} width="37px" height="37px" src={props.user.userPfp}></img>
         <div style={{marginLeft: "auto", marginTop: 0, marginBottom: 0, marginRight: "12px"}}>
             {isAuthedUserPost && (<MoreButton setDeleted={props.setDeleted} authenticatedUser={props.authenticatedUser} post={props.post}  />)}
         </div>

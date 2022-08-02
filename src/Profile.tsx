@@ -1,13 +1,14 @@
 import { useLocation } from "react-router-dom"
 import ProfileTimeLine from "./ProfileTimeLine"
 import { AuthenticatedUser, OnceUser } from "./types"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { useContext, useRef, useState } from "react"
 import { useDetectClickOutside } from "react-detect-click-outside"
-import editPfpSvg from "./images/editpfp.svg"
+import {ReactComponent as EditPFPSVG} from "./images/editpfp.svg"
 import { makeid } from "./FinishSignUp"
 import Resizer from "react-image-file-resizer"
-import { AuthProvider, useUpdateAuth, useAuth } from "./AuthenticatedUserContext"
+import { AuthProvider } from "./AuthenticatedUserContext"
+import { acceptFriendRequest } from "./TopBar"
 
 export interface LocationType {
     state: {
@@ -30,6 +31,7 @@ function Profile(props: ProfileProps) {
     const userToView = state.userToView as OnceUser
     const requestSent = authenticatedUser.outgoingFriendRequests.includes(userToView._id)
     const isFriends = authenticatedUser.friends.includes(userToView._id)
+    const incomingRequest = authenticatedUser.incomingFriendRequests.includes(userToView._id)
     const isSelf = authenticatedUser._id === userToView._id
     
     const [editMode, setEditMode] = useState(false)
@@ -48,14 +50,8 @@ function Profile(props: ProfileProps) {
 
     const unRequestButtonRef = useDetectClickOutside({
         onTriggered: () => {
-            console.log("triggered request ref")
+            //console.log("triggered request ref")
             setShowRequestButton(false)
-            setShowHideUnfriend(false)
-        }
-    });
-    const unfriendButtonRef = useDetectClickOutside({
-        onTriggered: () => {
-            console.log("triggered unfriend ref")
             setShowHideUnfriend(false)
         }
     });
@@ -67,7 +63,12 @@ function Profile(props: ProfileProps) {
         if (isFriends) {
             return "friends"
         }
-        else { return "not friends" }
+        if (incomingRequest){
+            return "incoming request"
+        }
+        else {
+            return "not friends" 
+        }
     })
 
     const UnsendRequestButton = () => {
@@ -83,24 +84,25 @@ function Profile(props: ProfileProps) {
     const EditButton = () => {
         return (<button className="small_button" style={{
             marginTop: "12px"
-        }} onClick={() => { setEditMode(!editMode) }}>Edit Profile Picture</button>
+        }} onClick={() => { setEditMode(!editMode) }}>Edit Profile Picture 📷</button>
         )
     }
 
     const CancelChanges = () => {
-        return (<button style={{}} onClick={() => {
+        return (<button style={{marginLeft: "12px"}} onClick={() => {
             setUserPfp(authenticatedUser.userPfp)
             setEditMode(false)
-        }} className="small_button">Cancel</button>)
+        }} className="small_button">Cancel ❌</button>)
     }
 
     const SaveChanges = () => {
         if (userPfp === authenticatedUser.userPfp) {
-            return <button style={{ color: "lightgrey", marginTop: "12px" }} className="small_button" >Save Changes</button>
+            return <button style={{ background: "#FAFF00", opacity: 0.4, marginTop: "12px" }} className="small_button" >Save Changes</button>
         }
-        return (<button style={{ backgroundColor: "#FAFF00", marginTop: "12px" }} className="small_button"
+        else{
+            return (<button style={{ backgroundColor: "#FAFF00", marginTop: "12px" }} className="small_button"
             onClick={async () => {
-                console.log("got to click handling")
+                //console.log("got to click handling")
                 try {
                     const uploadRes = await uploadProfilePicture(authenticatedUser.authToken, filename, fileUpload)
                     var updatedUser = authenticatedUser
@@ -109,10 +111,12 @@ function Profile(props: ProfileProps) {
                     setEditMode(false)
                 }
                 catch (error) {
-                    console.log(error)
+                    window.alert("An error occured while uploading this photo. Try a different one.")
                 }
             }}>Save Changes</button>
         )
+
+        }
     }
 
     const UnfriendButton = () => {
@@ -136,22 +140,22 @@ function Profile(props: ProfileProps) {
                     const newFileName: string = makeid(8) +  (event.target.files[0].name).replaceAll(/[^a-z0-9]/gi, "").replaceAll(" ", "")
                     var file: File = await compressProfilePicture( new File([event.target.files[0]], newFileName) )
                     // var file: File = new File([event.target.files[0]], newFileName, { type: event.target.files[0].type })
-                    console.log("new file name", newFileName)
-                    console.log("file name", file.name)
+                    //console.log("new file name", newFileName)
+                    //console.log("file name", file.name)
                     setFileName(file.name)
                     setFileUpload(file)
                     setUserPfp(URL.createObjectURL(file))
                 }
             }}></input>
-        const img = (
+        const EditButton = (
             <>
-                <img onClick={() => {
-                    console.log("clicked", fileInputRef.current)
+                <EditPFPSVG onClick={() => {
+                    //console.log("clicked", fileInputRef.current)
                     if (fileInputRef.current != null) {
                         fileInputRef.current.click()
                     }
-                }} className="profile_picture" style={{ zIndex: 1, position: "absolute", left: 0, top: 0 }}
-                    width="108px" height="108px" src={editPfpSvg}></img>
+                }} className="profile_picture" style={{ zIndex: 100, position: "absolute", left: 0, top: 0 }}
+                    width="108px" height="108px" ></EditPFPSVG>
                 {imageInput}
 
             </>
@@ -163,7 +167,7 @@ function Profile(props: ProfileProps) {
                 <p style={{ fontSize: "48px", margin: 0 }}>{userToView.username}</p>
                 <div style={{ margin: 0, position: "relative" }}>
                     <img style={{ zIndex: 0 }} className="profile_picture" width="108px" height="108px" src={userPfp}></img>
-                    {props.editMode && img}
+                    {props.editMode && EditButton}
                 </div>
 
             </div>
@@ -194,10 +198,26 @@ function Profile(props: ProfileProps) {
         }} onClick={() => {
             sendFriendRequest(userToView._id, authToken, phoneNumber)
                 .then(result => {
-
-                    setStatus(result)
+                    if (result.status === 200){
+                        setStatus("request sent")
+                    }
                 })
         }}>Add Friend</button>
+    }
+    if (status === "incoming request") { 
+        friendButtonContent = <button style={{
+            borderStyle: "solid", borderRadius: "4px",
+            borderColor: "black", fontSize: "15px", borderWidth: "2px",
+            background: "#FFFFFF"
+        }} onClick={async () => {
+            try{
+                await acceptFriendRequest(userToView._id, props.authenticatedUser._id)
+                setStatus("friends")    
+            }
+            catch(error){
+                window.alert("An error occured. Try again later.")
+            }
+        }}>Accept</button>
 
     }
 
@@ -221,6 +241,9 @@ function Profile(props: ProfileProps) {
                 if (result.status === 200) {
                     setStatus("not friends")
                 }
+                else{
+
+                }
             })
     }
 
@@ -230,17 +253,22 @@ function Profile(props: ProfileProps) {
                 if (result.status === 200) {
                     setStatus("not friends")
                 }
+                else{
+                    window.alert("an error occured :(")
+                }
+            })
+            .catch(error => {
+                window.alert("an error occured :(")
             })
 
     }
 
-    console.log("userToView", userToView)
+    //console.log("userToView", userToView)
     var editOrSave = <></>
     if (editMode) {
-        editOrSave = <div style={{ margin: 0 }}>
+        editOrSave = <div style={{ }}>
             <SaveChanges />
             <CancelChanges />
-
         </div>
 
     }
@@ -272,8 +300,13 @@ interface UploadPFPResponseType {
 export async function uploadProfilePicture(authToken: string, imageKey: string, fileUpload: File): Promise<UploadPFPResponseType> {
     var formData = new FormData()
     formData.append("pfp", fileUpload)
+    var baseURL = "https://slowcial-media.herokuapp.com"
+    if (window.location.href.includes("localhost")) {
+      baseURL = ""
+    }
+    
     try {
-        return axios.post<UploadPFPResponseType>("/update_profile_picture", formData,
+        return axios.post<UploadPFPResponseType>(baseURL + "/api/update_profile_picture", formData,
             { params: { "authToken": authToken, "imageKey": imageKey } }).then(response => { return response.data })
     }
     catch (error) { throw (error) }
@@ -285,11 +318,11 @@ export function sendFriendRequest(friendID: string, authToken: string, phoneNumb
         baseURL=""
     }
     
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<AxiosResponse>((resolve, reject) => {
         axios.get(baseURL + "/api/send_friend_request", { params: { "friendID": friendID, "authToken": authToken, "phoneNumber": phoneNumber } })
             .then(result => {
                 if (result.status === 200) {
-                    resolve("request sent")
+                    resolve(result)
                 }
             }).catch(error => {
                 reject(error)

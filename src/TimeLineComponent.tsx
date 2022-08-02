@@ -1,6 +1,6 @@
 import { getDateStringFromUnixTime } from "./MakePost"
 import Post from "./Post"
-import { DateHeader } from "./TimeLine"
+import { DateHeader } from "./Home"
 import { AuthenticatedUser, PostType } from "./types"
 
 

@@ -14,8 +14,8 @@ function ImagePost(props: ImagePostProps) {
 
     const [liked, setLiked] = useState(props.post.usersWhoLiked.includes(props.authenticatedUser._id))
     const [likeCount, setLikeCount] = useState(props.post.usersWhoLiked.length)
-    console.log("liked status: ", liked)
-    var star = <StarButton sendLike={() => { sendLike() }} liked={liked} post={props.post} userID={props.authenticatedUser._id} _id={props.post._id} />
+    //console.log("liked status: ", liked)
+    var star = <StarButton sendLike={() => { sendLike(props.post._id, props.authenticatedUser._id) }} liked={liked} post={props.post} userID={props.authenticatedUser._id} _id={props.post._id} />
 
 
     return (<div style={{
@@ -25,18 +25,20 @@ function ImagePost(props: ImagePostProps) {
     }}>
         <img src={props.post.imgUrl} width={"100%"} ></img>
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "right", paddingRight: "12px" }}>
+
             <p style={{ fontSize: "15px", marginLeft: "12px", marginRight: "auto", fontWeight: "bold" }}>{props.post.textContent}</p>
             <p style={{ fontSize: "22px", marginRight: "6px" }}>{likeCount}</p>
+
             {star}
         </div>
     </div>)
 
-    function sendLike() {
+    function sendLike(postID: string, userID: string) {
         var baseURL = "https://slowcial-media.herokuapp.com"
         if (window.location.href.includes("localhost")){
             baseURL = ""
         }
-        axios.get(baseURL + "/api/like_post", { params: { "_id": props.post._id, "userID": props.authenticatedUser._id } })
+        axios.get(baseURL + "/api/like_post", { params: { "_id": postID, "userID": userID } })
             .then(result => {
                 if (result.status === 200) {
                     setLiked(!liked)

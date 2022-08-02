@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthenticatedUser, OnceUser, PostType } from "./types";
 import { getDateStringFromUnixTime } from "./MakePost";
 import TimeLineComponent from "./TimeLineComponent";
-import { DateHeader } from "./TimeLine";
+import { DateHeader } from "./Home";
 
 export interface ProfileTimeLineProps {
     userToView: OnceUser
@@ -30,7 +30,7 @@ function ProfileTimeLine(props: ProfileTimeLineProps) {
             }
         }).then(result => {
             setTimelinePosts(result.data)
-            console.log("result from get timeline", result)
+            //console.log("result from get timeline", result)
         })
     }, [])
 
