@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Post from "./Post";
 import { useNavigate } from "react-router-dom";
 import { AuthenticatedUser, OnceUser, PostType } from "./types";
-import MakePost, { getDateStringFromUnixTime } from "./MakePost";
+import MakePost, { getDateStringFromUnixTime, getTodaysPrompt } from "./MakePost";
 import TimeLineComponent from "./TimeLineComponent";
 import {ReactComponent as Search} from "./images/search.svg"
 
@@ -37,16 +37,20 @@ function Home(props: HomeProps) {
             }), axios.get(baseURL + "/api/get_time_of_last_post", {params: {"userID": props.authenticatedUser._id}})])
             .then(results => {
                 if (results){
-                    setTimelinePosts(results[0].data as PostType[])
-                    if (results[1].data.timeStamp + 43200 > (new Date().getTime() / 1000)){
-                        //console.log(results[1].data.timeStamp)
-                        setCanPost(false)
-                    }
-                    else{
-                        //console.log(results[1].data.timeStamp)
+                    (async ()=> { 
+                        const todaysPrompt = await getTodaysPrompt()
+                        if (lastPost.promptPhrase === todaysPrompt){
+                            //console.log(results[1].data.timeStamp)
+                            setCanPost(false)
+                        }
+                        else{    
+                            console.log(lastPost)
+                            setCanPost(true)
+                        }
+                    })()
 
-                        setCanPost(true)
-                    }
+                    setTimelinePosts(results[0].data as PostType[])
+                    const lastPost = results[1].data
                 }
             })
             .catch(error => {
@@ -55,6 +59,10 @@ function Home(props: HomeProps) {
         }
         else {
             navigate("/signup")
+        }
+
+        return ()=>{
+
         }
     }, [])
 

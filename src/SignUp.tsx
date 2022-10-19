@@ -28,7 +28,7 @@ function SignUp() {
                         <Input country={'us'}
                             value={phoneNumber} onChange={setPhoneNumber}></Input>
                     </div>
-                    <button className="small_button" style={{
+                    <button  className="small_button" style={{
                         fontSize: "28px", fontWeight: 'bold', marginTop: "12px",
                         backgroundColor: "#FAFF00"
                     }} onClick={sendSMSCode}>Send Code</button>
@@ -41,7 +41,7 @@ function SignUp() {
             <div className="border_div" style={{ width: "100%", display: "flex", height: "480px", flexDirection: "column", marginTop: "32px", alignItems: "center" }}>
                 <h2>Verify Code</h2>
                 <h1>🔐</h1>
-                <input className="special_input" style={{ fontSize: "18px" }} onChange={(event) => { setSMSCode(event.target.value) }}></input>
+                <input pattern="[0-9]*" type="numeric" autoComplete="one-time-code" style={{ fontSize: "18px" }} onChange={(event) => { setSMSCode(event.target.value) }}></input>
                 <button className="small_button" style={{ fontSize: "28px", fontWeight: 'bold', margin: "12px" }} onClick={verifySMSCode}>Verify</button>
             </div>
         </div>

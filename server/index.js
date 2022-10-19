@@ -713,14 +713,14 @@ app.post("/api/upload_user_image", uploadUserImage.single("user_image"), (req, r
 app.get("/api/get_time_of_last_post", (req, res) => {
   //console.log("get time of last post")
   const userID = req.query.userID
-  postsCollection.findOne({ "userID": new ObjectId(userID) }, { projection: { "timeStamp": 1 } })
+  postsCollection.findOne({ "userID": new ObjectId(userID) }, { projection: { "timeStamp": 1, "promptPhrase": 1 } })
     .then(result => {
-      if (result) {
+      if (result != null) {
         //console.log()
         res.status(200).send(result)
       }
       else {
-        res.status(200).send({ "timeStamp": 0 })
+        res.status(200).send({ "timeStamp": 0, promptPhrase: "" })
       }
     })
     .catch(error => {
@@ -741,6 +741,7 @@ app.get("/api/make_post", async (req, res) => {
   var userID = req.query.userID
   var imageKey = req.query.imageKey
   var description = req.query.description
+  var promptPhrase = req.query.promptPhrase
   var timeStamp = Math.round(new Date().getTime() / 1000)
 
 
@@ -754,7 +755,8 @@ app.get("/api/make_post", async (req, res) => {
         textContent: description,
         commentsID: new ObjectId(),
         usersWhoLiked: [],
-        timeStamp: timeStamp
+        timeStamp: timeStamp,
+        promptPhrase: promptPhrase
       }).then(result => {
         res.status(200).send(result)
       })

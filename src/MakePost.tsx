@@ -72,7 +72,7 @@ function MakePost(props: MakePostProps) {
             width: "calc(100% + 4px)",
             marginBottom: -2
         }} onClick={() => {
-            makePost(authToken, props.authenticatedUser._id, fileUpload.name, description)
+            makePost(authToken, props.authenticatedUser._id, fileUpload.name, description, todaysPrompt)
                 .then(result => {
                     window.location.reload()
                 }).catch(() => { window.alert("An error occured. Try again later.") })
@@ -143,10 +143,10 @@ function MakePost(props: MakePostProps) {
         setFileUpload(new File([], ""))
     }
 
-    async function makePost(authToken: string, userID: string, imageKey: string, description: string) {
+    async function makePost(authToken: string, userID: string, imageKey: string, description: string, prompt: string) {
         try {
             const uploadRes = await uploadImage(authToken, imageKey)
-            await axios.get(baseURL + "/api/make_post", { params: { authToken, userID, imageKey, description } })
+            await axios.get(baseURL + "/api/make_post", { params: { authToken, userID, imageKey, description, prompt } })
             return "success"
         }
         catch (error) {

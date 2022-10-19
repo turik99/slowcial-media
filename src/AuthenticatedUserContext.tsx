@@ -3,20 +3,20 @@ import { AuthenticatedUser } from "./types"
 
 
 
-export const blankUser = {
+export const blankUser: AuthenticatedUser = {
     _id: "",
     username: "",
     userPfp: "",
     timeCreated: 0,
-    userImageKeys: [""],
+    userImageKeys: [] as string[],
     authToken: "",
-    friends: [""],
+    friends: [] as string[],
     phoneNumber: "",
     outgoingFriendRequests: [] as string[],
     incomingFriendRequests: [] as string[]
 }
 
-export interface AuthContextType{
+export interface AuthContextType {
     authenticatedUser: AuthenticatedUser,
     setAuthenticatedUser: Dispatch<SetStateAction<AuthenticatedUser>>
 }

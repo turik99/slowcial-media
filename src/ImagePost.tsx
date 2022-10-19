@@ -9,7 +9,7 @@ export interface ImagePostProps {
 }
 
 function ImagePost(props: ImagePostProps) {
-     
+
 
 
     const [liked, setLiked] = useState(props.post.usersWhoLiked.includes(props.authenticatedUser._id))
@@ -23,6 +23,7 @@ function ImagePost(props: ImagePostProps) {
         borderBottomRightRadius: "8px", borderBottomLeftRadius: "8px",
         borderStyle: 'solid', display: 'flex', flexDirection: "column", alignItems: "left", borderTopStyle: "none"
     }}>
+        <p className="small_text" style={{fontStyle:"italic"}}>{props.post.promptPhrase}</p>
         <img src={props.post.imgUrl} width={"100%"} ></img>
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "right", paddingRight: "12px" }}>
 
@@ -35,17 +36,17 @@ function ImagePost(props: ImagePostProps) {
 
     function sendLike(postID: string, userID: string) {
         var baseURL = "https://slowcial-media.herokuapp.com"
-        if (window.location.href.includes("localhost")){
+        if (window.location.href.includes("localhost")) {
             baseURL = ""
         }
         axios.get(baseURL + "/api/like_post", { params: { "_id": postID, "userID": userID } })
             .then(result => {
                 if (result.status === 200) {
                     setLiked(!liked)
-                    if (liked){
+                    if (liked) {
                         setLikeCount(likeCount - 1)
                     }
-                    else{
+                    else {
                         setLikeCount(likeCount + 1)
                     }
                 }

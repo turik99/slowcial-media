@@ -35,7 +35,8 @@ export interface PostType{
     textContent: string
     usersWhoLiked: string[]
     comments: PostCommentsType[]
-    localDate: string
+    localDate: string, 
+    promptPhrase: string
 }
 
 export interface PostCommentsType {
