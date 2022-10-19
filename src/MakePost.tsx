@@ -90,8 +90,8 @@ function MakePost(props: MakePostProps) {
     return (
         <div className="border_div" style={{ display: "flex", flexDirection: "column", alignItems: "start", width: "calc(100% - 4px)", marginTop: "12px" }}>
             <div style={{display: "flex", margin: "12px"}}>
-                <p className="medium_text" style={{ margin: 0 }}>Make a post of:</p>
-                <p className="medium_text" style={{  margin: 0, marginLeft: "6px", textDecoration: "underline" }}>{todaysPrompt}</p>
+                {/* <p className="medium_text" style={{ margin: 0 }}>Make a post of:</p>
+                <p className="medium_text" style={{  margin: 0, marginLeft: "6px", textDecoration: "underline" }}>{todaysPrompt}</p> */}
             </div>
 
             <div style={{

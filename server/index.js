@@ -27,7 +27,7 @@ const twilioClient = require('twilio')(accountSid, authToken);
 const mongoClient = new MongoClient(mongoURL)
 const dbName = "1onceDB"
 var mongoDatabase
-const serviceSID = "VA189cbf6a022c2944b75bf5f91d0d4e75"
+const serviceSID = process.env.serviceSID;
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
