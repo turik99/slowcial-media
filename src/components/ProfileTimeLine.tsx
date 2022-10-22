@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 
 import Post from "./Post";
 import { useNavigate } from "react-router-dom";
-import { AuthenticatedUser, OnceUser, PostType } from "./types";
+import { AuthenticatedUser, OnceUser, PostType } from "../types";
 import { getDateStringFromUnixTime } from "./MakePost";
 import TimeLineComponent from "./TimeLineComponent";
-import { DateHeader } from "./Home";
+import { DateHeader } from "../pages/Home";
 
 export interface ProfileTimeLineProps {
     userToView: OnceUser

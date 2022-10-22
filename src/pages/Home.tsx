@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-import Post from "./Post";
+import Post from "../components/Post";
 import { useNavigate } from "react-router-dom";
-import { AuthenticatedUser, OnceUser, PostType } from "./types";
-import MakePost, { getDateStringFromUnixTime, getTodaysPrompt } from "./MakePost";
-import TimeLineComponent from "./TimeLineComponent";
+import { AuthenticatedUser, OnceUser, PostType } from "../types";
+import MakePost, { getDateStringFromUnixTime, getTodaysPrompt } from "../components/MakePost";
+import TimeLineComponent from "../components/TimeLineComponent";
 import {ReactComponent as Search} from "./images/search.svg"
 
 export interface HomeProps {

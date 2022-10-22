@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useEffect, useRef, useState } from "react"
-import StarButton from "./StarButton"
-import { AuthenticatedUser, OnceUser, PostType } from "./types"
+import StarButton from "../buttons/StarButton"
+import { AuthenticatedUser, OnceUser, PostType } from "../types"
 
 export interface ImagePostProps {
     post: PostType,

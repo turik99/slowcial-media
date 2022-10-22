@@ -2,7 +2,7 @@ import { ReactComponent as Star } from "./images/star.svg"
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { CSSProperties } from "react";
-import { PostType } from "./types";
+import { PostType } from "../types";
 
 export interface StarButtonProps {
     _id: string

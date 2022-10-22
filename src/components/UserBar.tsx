@@ -1,6 +1,6 @@
-import { AuthenticatedUser, OnceUser, PostType } from "./types"
+import { AuthenticatedUser, OnceUser, PostType } from "../types"
 import { useNavigate } from "react-router-dom"
-import MoreButton from "./MoreButton"
+import MoreButton from "../buttons/MoreButton"
 import { Dispatch, SetStateAction } from "react"
 export interface UserBarProps {
     authenticatedUser: AuthenticatedUser

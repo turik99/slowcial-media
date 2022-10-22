@@ -1,9 +1,9 @@
 import axios from "axios"
 import React, { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { DateHeader } from "./Home"
+import { DateHeader } from "../pages/Home"
 import {ReactComponent as Plus} from "./images/plus2.svg"
-import { AuthenticatedUser } from "./types"
+import { AuthenticatedUser } from "../types"
 
 export interface MakePostProps {
     authenticatedUser: AuthenticatedUser,

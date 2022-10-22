@@ -1,7 +1,7 @@
 import axios from "axios"
 import React, { useState, Dispatch, SetStateAction, useEffect, useRef } from "react"
 import {ReactComponent as ThreeDots} from "./images/three_dots.svg"
-import { AuthenticatedUser, OnceUser, PostType } from "./types"
+import { AuthenticatedUser, OnceUser, PostType } from "../types"
 import { useDetectClickOutside } from "react-detect-click-outside"
 
 export interface MoreButtonProps{

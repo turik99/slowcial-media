@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Input from "react-phone-input-2"
 import 'react-phone-input-2/lib/style.css'
-import { VerifySMSResponseType } from "./types"
+import { VerifySMSResponseType } from "../types"
 
 
 function SignUp() {

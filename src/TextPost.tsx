@@ -1,5 +1,5 @@
 import { OnceUser, PostType } from "./types"
-import UserBar from "./UserBar"
+import UserBar from "./components/UserBar"
 
 export interface TextPostProps{
     post: PostType

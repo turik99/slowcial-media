@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
-import { AuthenticatedUser, OnceUser } from "./types"
+import { AuthenticatedUser, OnceUser } from "../types"
 import { debounce } from "lodash"
 import { useNavigate } from "react-router-dom"
 

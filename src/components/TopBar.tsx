@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { AuthenticatedUser, OnceUser } from "./types"
+import { AuthenticatedUser, OnceUser } from "../types"
 import { ReactComponent as BackButton } from "./images/back_arrow.svg"
 import { ReactComponent as Check } from "./images/check.svg"
 import axios from "axios"
 
 import { useDetectClickOutside } from "react-detect-click-outside"
-import { AuthContext } from "./AuthenticatedUserContext"
+import { AuthContext } from "../AuthenticatedUserContext"
 
 
 

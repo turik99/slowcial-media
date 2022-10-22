@@ -1,14 +1,14 @@
 import { useLocation } from "react-router-dom"
-import ProfileTimeLine from "./ProfileTimeLine"
-import { AuthenticatedUser, OnceUser } from "./types"
+import ProfileTimeLine from "../components/ProfileTimeLine"
+import { AuthenticatedUser, OnceUser } from "../types"
 import axios, { AxiosResponse } from "axios"
 import { useContext, useRef, useState } from "react"
 import { useDetectClickOutside } from "react-detect-click-outside"
 import {ReactComponent as EditPFPSVG} from "./images/editpfp.svg"
 import { makeid } from "./FinishSignUp"
 import Resizer from "react-image-file-resizer"
-import { AuthProvider } from "./AuthenticatedUserContext"
-import { acceptFriendRequest } from "./TopBar"
+import { AuthProvider } from "../AuthenticatedUserContext"
+import { acceptFriendRequest } from "../components/TopBar"
 
 export interface LocationType {
     state: {
